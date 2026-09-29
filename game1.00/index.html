@@ -35,6 +35,7 @@
     .enemy-tag { position:absolute; right:8%; top:21%; text-align:center; text-shadow:0 2px 9px #19231e; }
     .enemy-name { font:600 18px var(--serif); }
     .enemy-level { margin-top:3px; color:#f3d59b; font:500 10px Cinzel,serif; letter-spacing:1.6px; }
+    .wound-status { display:inline-block; margin-top:6px; padding:3px 7px; border:1px solid rgba(234,140,115,.65); color:#ffd2b8; background:rgba(76,32,28,.72); font-size:10px; }
     .enemy-health { width:124px; height:5px; margin:9px auto 0; background:rgba(12,21,19,.67); }
     .enemy-health-fill { width:100%; height:100%; background:linear-gradient(90deg,#dd8b69,#f0c17c); transition:width .3s; }
     .battle-ribbon { display:flex; align-items:center; gap:12px; min-height:47px; padding:10px 19px; background:rgba(13,32,29,.93); border-top:1px solid rgba(255,255,255,.08); }
@@ -91,6 +92,19 @@
     .dialog p { margin:0 auto; max-width:340px; color:#d0d8ca; font-size:12px; line-height:2; }
     .dialog-button { min-width:178px; min-height:43px; margin-top:21px; padding:0 18px; border:1px solid var(--gold); color:#21332b; background:var(--gold); font:600 12px var(--serif); cursor:pointer; }
     .dialog-button:hover,.dialog-button:focus-visible { background:#f4dfa9; outline:2px solid #f4dfa9; outline-offset:3px; }
+    .skill-dialog { width:min(500px,100%); padding:26px; text-align:left; border:1px solid rgba(232,199,124,.52); background:linear-gradient(145deg,#244239,#182d29); box-shadow:0 24px 90px #071110; }
+    .skill-dialog h2 { margin:8px 0 4px; font:600 25px var(--serif); }
+    .skill-subtitle { margin:0 0 18px; color:var(--muted); font-size:11px; }
+    .skill-list { display:grid; gap:8px; }
+    .skill-option { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; min-height:64px; padding:10px 13px; text-align:left; border:1px solid rgba(230,231,204,.24); color:var(--ink); background:rgba(8,23,21,.32); cursor:pointer; }
+    .skill-option:hover:not(:disabled),.skill-option:focus-visible { border-color:var(--gold); background:rgba(182,148,81,.15); outline:none; }
+    .skill-option:disabled { color:#869087; cursor:not-allowed; opacity:.7; }
+    .skill-name { display:block; font:600 14px var(--serif); }
+    .skill-description { display:block; margin-top:4px; color:var(--muted); font-size:10px; }
+    .skill-cost { flex:none; color:var(--gold); font-size:11px; }
+    .skill-option:disabled .skill-cost { color:#a78c7b; }
+    .skill-cancel { display:block; min-width:92px; min-height:37px; margin:16px 0 0 auto; border:1px solid var(--line); color:#d5ddcf; background:transparent; font-size:11px; cursor:pointer; }
+    .skill-cancel:hover,.skill-cancel:focus-visible { border-color:var(--gold); color:#fff3d1; outline:none; }
     .hidden { display:none !important; }
     @keyframes fade-in { from { opacity:0; } to { opacity:1; } }
     @media(max-width:760px) {
@@ -118,7 +132,7 @@
       <section class="battlefield" aria-label="戦闘風景">
         <canvas id="scene" aria-label="二人の冒険者と魔物が対峙する風景"></canvas><div class="scene-vignette"></div>
         <div class="scene-label" id="locationLabel">風渡りの丘 · 夕刻</div>
-        <div class="enemy-tag"><div class="enemy-name" id="enemyName">風裂き狼</div><div class="enemy-level" id="enemyLevel">WILD · Lv. 03</div><div class="enemy-health"><div class="enemy-health-fill" id="enemyHealthFill"></div></div></div>
+        <div class="enemy-tag"><div class="enemy-name" id="enemyName">風裂き狼</div><div class="enemy-level" id="enemyLevel">WILD · Lv. 03</div><div class="wound-status hidden" id="woundStatus" aria-live="polite"></div><div class="enemy-health"><div class="enemy-health-fill" id="enemyHealthFill"></div></div></div>
       </section>
       <div class="battle-ribbon" aria-live="polite"><span class="turn-mark" id="turnMark">TURN 01</span><span class="battle-message" id="battleMessage">二人の行動を選んでください。</span></div>
       <div class="battle-layout">
@@ -128,12 +142,12 @@
             <article class="hero-card active" id="card-yuno"><div class="hero-head"><div class="portrait" aria-hidden="true">結</div><div><div class="hero-name">ユノ</div><div class="hero-role">星刃の剣士 · 前衛</div></div><span class="order-state" id="state-yuno">選択中</span></div>
               <div class="stat-line"><span>HP</span><span id="hp-yuno-text">120 / 120</span></div><div class="meter"><div class="meter-fill hp-fill" id="hp-yuno"></div></div>
               <div class="stat-line"><span>MP</span><span id="mp-yuno-text">32 / 32</span></div><div class="meter"><div class="meter-fill mp-fill" id="mp-yuno"></div></div>
-              <div class="action-row" id="actions-yuno"><button class="action-btn" data-actor="yuno" data-action="attack">斬る</button><button class="action-btn" data-actor="yuno" data-action="skill" title="月閃・MP 14">月閃</button><button class="action-btn" data-actor="yuno" data-action="guard">構える</button><button class="action-btn" data-actor="yuno" data-action="potion">薬草</button></div><div class="command-detail">月閃: MP 14 · 強力な一撃</div>
+              <div class="action-row" id="actions-yuno"><button class="action-btn" data-actor="yuno" data-action="attack">斬る</button><button class="action-btn" data-actor="yuno" data-action="skill" title="スキルを選ぶ">技</button><button class="action-btn" data-actor="yuno" data-action="guard">構える</button><button class="action-btn" data-actor="yuno" data-action="potion">薬草</button></div><div class="command-detail">月閃: MP 14 · 強力な一撃</div>
             </article>
             <article class="hero-card" id="card-gai"><div class="hero-head"><div class="portrait guardian" aria-hidden="true">盾</div><div><div class="hero-name">ガイ</div><div class="hero-role">森守の護り手 · 守護</div></div><span class="order-state" id="state-gai">待機</span></div>
               <div class="stat-line"><span>HP</span><span id="hp-gai-text">145 / 145</span></div><div class="meter"><div class="meter-fill hp-fill" id="hp-gai"></div></div>
               <div class="stat-line"><span>MP</span><span id="mp-gai-text">24 / 24</span></div><div class="meter"><div class="meter-fill mp-fill" id="mp-gai"></div></div>
-              <div class="action-row" id="actions-gai"><button class="action-btn" data-actor="gai" data-action="attack">打つ</button><button class="action-btn" data-actor="gai" data-action="skill" title="大地の構え・MP 8">大地の構え</button><button class="action-btn" data-actor="gai" data-action="guard">守る</button><button class="action-btn" data-actor="gai" data-action="potion">薬草</button></div><div class="command-detail">大地の構え: MP 8 · 身を守り反撃</div>
+              <div class="action-row" id="actions-gai"><button class="action-btn" data-actor="gai" data-action="attack">打つ</button><button class="action-btn" data-actor="gai" data-action="skill" title="スキルを選ぶ">技</button><button class="action-btn" data-actor="gai" data-action="guard">守る</button><button class="action-btn" data-actor="gai" data-action="potion">薬草</button></div><div class="command-detail">大地の構え: MP 8 · 身を守り反撃</div>
             </article>
           </div>
         </section>
@@ -145,6 +159,7 @@
       <footer class="footer"><span>行動を予約して、二人の一手を重ねよう。</span><span>キー操作: 1 斬る · 2 技 · 3 守る · 4 薬草</span></footer>
     </main>
   </div>
+  <div class="overlay hidden" id="skillOverlay" role="dialog" aria-modal="true" aria-labelledby="skillTitle"><div class="skill-dialog"><div class="dialog-kicker">SKILL</div><h2 id="skillTitle">技を選ぶ</h2><p class="skill-subtitle" id="skillSubtitle">使用する技を選択してください。</p><div class="skill-list" id="skillList"></div><button class="skill-cancel" id="skillCancel" type="button">戻る</button></div></div>
   <div class="overlay" id="dialogOverlay" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"><div class="dialog"><div class="dialog-kicker" id="dialogKicker">A TALE OF TWO</div><h2 id="dialogTitle">星の欠片を追って</h2><p id="dialogText">剣士ユノと守護者ガイ。二人の旅が、風渡りの丘から始まる。<br>それぞれの行動を選び、力を重ねて魔物を退けよう。</p><button class="dialog-button" id="dialogButton">旅を始める</button></div></div>
   <script>
     (() => {
@@ -157,7 +172,7 @@
         { place:"水鏡の遺跡", location:"水鏡の遺跡 · 薄明", enemy:"水鏡の番人", level:"GUARDIAN · Lv. 06", hp:142, attack:17, note:"遺跡の水面に、古い星図が浮かぶ。<br>番人の守りを崩すには、息を合わせて。", sky:["#8fbdba","#536e68"] },
         { place:"星喰いの祭壇", location:"星喰いの祭壇 · 夜", enemy:"宵闇の竜", level:"ANCIENT · Lv. 09", hp:206, attack:21, note:"最後の欠片を呑み込む竜が目を開く。<br>二人で紡いだ絆を、最後の一撃に。", sky:["#716b86","#293c48"] }
       ];
-      const state={battle:0,enemyHp:battles[0].hp,turn:1,bond:0,pending:{},nextHero:"yuno",busy:false,potions:2,ended:false};
+      const state={battle:0,enemyHp:battles[0].hp,woundTurns:0,turn:1,bond:0,pending:{},nextHero:"yuno",busy:false,potions:2,ended:false};
       const $=id=>document.getElementById(id),canvas=$("scene"),ctx=canvas.getContext("2d"),keys=["yuno","gai"];
       const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
       const currentBattle=()=>battles[state.battle];
@@ -195,10 +210,11 @@
       function addLog(message){const list=$("logList"),item=document.createElement("li");item.textContent=message;list.prepend(item);while(list.children.length>4)list.lastElementChild.remove();}
       function updateUI(){
         const battle=currentBattle();$("enemyName").textContent=battle.enemy;$("enemyLevel").textContent=battle.level;$("enemyHealthFill").style.width=`${Math.max(0,state.enemyHp)/battle.hp*100}%`;
+        $("woundStatus").textContent=state.woundTurns?`傷口 · 残り${state.woundTurns}ターン`:"";$("woundStatus").classList.toggle("hidden",state.woundTurns===0);
         $("journeyCount").textContent=["第一章","第二章","終章"][state.battle];$("journeyPlace").textContent=battle.place;$("chapterTitle").textContent=battle.place;$("chapterNote").innerHTML=battle.note;$("locationLabel").textContent=battle.location;$("turnMark").textContent=`TURN ${String(state.turn).padStart(2,"0")}`;
         for(const key of keys){const hero=heroes[key],card=$("card-"+key);$("hp-"+key).style.width=`${hero.hp/hero.maxHp*100}%`;$("mp-"+key).style.width=`${hero.mp/hero.maxMp*100}%`;$("hp-"+key+"-text").textContent=`${hero.hp} / ${hero.maxHp}`;$("mp-"+key+"-text").textContent=`${hero.mp} / ${hero.maxMp}`;
           card.classList.toggle("active",!state.busy&&!state.ended&&state.nextHero===key&&hero.alive&&!state.pending[key]);card.classList.toggle("done",Boolean(state.pending[key]));card.classList.toggle("down",!hero.alive);$("state-"+key).textContent=!hero.alive?"戦闘不能":state.pending[key]?"行動予約":state.nextHero===key&&!state.busy?"選択中":"待機";
-          $("actions-"+key).querySelectorAll("button").forEach(button=>{const action=button.dataset.action;button.disabled=state.busy||state.ended||!hero.alive||Boolean(state.pending[key])||state.nextHero!==key||(action==="skill"&&hero.mp<(key==="yuno"?14:8))||(action==="potion"&&(state.potions===0||hero.hp===hero.maxHp));if(action==="potion")button.textContent=`薬草 ${state.potions}`;});
+          $("actions-"+key).querySelectorAll("button").forEach(button=>{const action=button.dataset.action;button.disabled=state.busy||state.ended||!hero.alive||Boolean(state.pending[key])||state.nextHero!==key||(action==="potion"&&(state.potions===0||hero.hp===hero.maxHp));if(action==="potion")button.textContent=`薬草 ${state.potions}`;});
         }
         $("planningLabel").textContent=state.ended?"旅はここで終わった":state.busy?"敵の行動中…":state.pending.yuno&&state.pending.gai?"行動を解決中…":`${heroes[state.nextHero].name}の行動を選択`;
         $("bondFill").style.width=`${state.bond}%`;$("bondValue").textContent=`${String(state.bond).padStart(2,"0")} / 100`;
@@ -206,7 +222,19 @@
         $("linkButton").disabled=state.busy||state.ended||state.bond<100||!heroes.yuno.alive||!heroes.gai.alive;$("linkButton").classList.toggle("ready",state.bond>=100&&!state.busy&&!state.ended);$("linkButton").textContent=state.bond>=100?"✦ 星結び · ふたりで放つ":"星結び · 絆が満ちると発動";
       }
       function gainBond(amount){state.bond=clamp(state.bond+amount,0,100);}
+      function damageEnemy(baseDamage){const bonus=state.woundTurns?Math.floor(baseDamage*.2):0;state.enemyHp-=baseDamage+bonus;return bonus;}
       function actionLabel(action,actor){return({attack:actor==="yuno"?"斬る":"打つ",skill:actor==="yuno"?"月閃":"大地の構え",guard:"守る",potion:"薬草"})[action];}
+      function openSkillMenu(actor){
+        if(state.busy||state.ended||actor!==state.nextHero||!heroes[actor].alive||state.pending[actor])return;
+        const skill=actor==="yuno"?{name:"月閃",cost:14,description:"星刃で敵を貫く強力な一撃。"}:{name:"大地の構え",cost:8,description:"敵に攻撃しながら身を守る。"};
+        $("skillTitle").textContent=`${heroes[actor].name}の技`;
+        $("skillSubtitle").textContent=`現在のMP: ${heroes[actor].mp} / ${heroes[actor].maxMp}`;
+        const option=document.createElement("button");option.type="button";option.className="skill-option";option.disabled=heroes[actor].mp<skill.cost;
+        option.innerHTML=`<span><span class="skill-name">${skill.name}</span><span class="skill-description">${skill.description}</span></span><span class="skill-cost">MP ${skill.cost}</span>`;
+        option.addEventListener("click",()=>{$("skillOverlay").classList.add("hidden");planAction(actor,"skill");});
+        $("skillList").replaceChildren(option);$("skillOverlay").classList.remove("hidden");
+        if(option.disabled){$("skillSubtitle").textContent="MPが足りません。";$("skillCancel").focus();}else option.focus();
+      }
       function planAction(actor,action){
         if(state.busy||state.ended||actor!==state.nextHero||!heroes[actor].alive||state.pending[actor])return;const hero=heroes[actor];
         if(action==="skill"){const cost=actor==="yuno"?14:8;if(hero.mp<cost)return;hero.mp-=cost;}
@@ -218,10 +246,10 @@
       function resolveTurn(){
         state.busy=true;updateUI();
         for(const key of keys){if(state.enemyHp<=0||!heroes[key].alive)continue;const action=state.pending[key].action,hero=heroes[key];
-          if(action==="attack"){const damage=hero.attack+Math.floor(Math.random()*5);state.enemyHp-=damage;gainBond(16);addLog(`${hero.name}の攻撃。${currentBattle().enemy}に${damage}のダメージ。`);}
-          else if(action==="skill"&&key==="yuno"){const damage=39+Math.floor(Math.random()*8);state.enemyHp-=damage;gainBond(21);addLog(`ユノの月閃。星刃が${currentBattle().enemy}を貫く。${damage}ダメージ。`);}
-          else if(action==="skill"){const damage=12+Math.floor(Math.random()*5);state.enemyHp-=damage;hero.defend=true;gainBond(18);addLog(`ガイは大地の構え。${damage}ダメージを与え、守りを固めた。`);}
-          else if(action==="guard"){hero.defend=true;gainBond(12);addLog(`${hero.name}は守りを固めた。`);}
+          if(action==="attack"){const damage=hero.attack+Math.floor(Math.random()*5),mpRecovered=Math.min(3,hero.maxMp-hero.mp),bonus=damageEnemy(damage);hero.mp+=mpRecovered;gainBond(16);if(key==="yuno")state.woundTurns=2;addLog(`${hero.name}の攻撃。${currentBattle().enemy}に${damage+bonus}ダメージ${bonus?`（傷口に追加${bonus}）`:""}。MPが${mpRecovered}回復。${key==="yuno"?"傷口を付けた（2ターン）。":""}`);}
+          else if(action==="skill"&&key==="yuno"){const damage=39+Math.floor(Math.random()*8),bonus=damageEnemy(damage);gainBond(21);addLog(`ユノの月閃。星刃が${currentBattle().enemy}を貫く。${damage+bonus}ダメージ${bonus?`（傷口に追加${bonus}）`:""}。`);}
+          else if(action==="skill"){const damage=12+Math.floor(Math.random()*5),bonus=damageEnemy(damage);hero.defend=true;gainBond(18);addLog(`ガイは大地の構え。${damage+bonus}ダメージ${bonus?`（傷口に追加${bonus}）`:""}を与え、守りを固めた。`);}
+          else if(action==="guard"){const mpRecovered=Math.min(5,hero.maxMp-hero.mp);hero.mp+=mpRecovered;hero.defend=true;gainBond(12);addLog(`${hero.name}は守りを固めた。MPが${mpRecovered}回復。`);}
           else if(action==="potion"){const heal=Math.min(48,hero.maxHp-hero.hp);hero.hp+=heal;gainBond(10);addLog(`${hero.name}は薬草を使った。HPが${heal}回復。`);}
         }
         state.pending={};updateUI();if(state.enemyHp<=0){setTimeout(victory,650);return;}setMessage(`${currentBattle().enemy}が二人に襲いかかる。`);setTimeout(enemyTurn,650);
@@ -230,26 +258,28 @@
         if(state.ended)return;const living=keys.filter(key=>heroes[key].alive);if(!living.length){defeat();return;}
         const target=living[Math.floor(Math.random()*living.length)],hero=heroes[target];let damage=currentBattle().attack+Math.floor(Math.random()*6);if(hero.defend)damage=Math.max(3,Math.floor(damage*.45));hero.hp=Math.max(0,hero.hp-damage);hero.defend=false;
         if(hero.hp===0){hero.alive=false;addLog(`${hero.name}は倒れた。`);}else addLog(`${currentBattle().enemy}の攻撃。${hero.name}は${damage}のダメージ。`);
+        if(state.woundTurns>0){state.woundTurns--;if(state.woundTurns===0)addLog(`${currentBattle().enemy}の傷口がふさがった。`);}
         state.turn++;state.busy=false;state.pending={};state.nextHero=heroes.yuno.alive?"yuno":"gai";updateUI();if(!heroes.yuno.alive&&!heroes.gai.alive){defeat();return;}setMessage(`${heroes.yuno.alive?"二人":"ガイ"}の次の行動を選んでください。`);
       }
       function useLink(){
         if(state.busy||state.ended||state.bond<100||!heroes.yuno.alive||!heroes.gai.alive)return;state.busy=true;state.bond=0;state.pending={};
-        const damage=91+Math.floor(Math.random()*15);state.enemyHp-=damage;const healY=Math.min(18,heroes.yuno.maxHp-heroes.yuno.hp),healG=Math.min(18,heroes.gai.maxHp-heroes.gai.hp);heroes.yuno.hp+=healY;heroes.gai.hp+=healG;
-        setMessage("二人の星が重なる。星結びを放った！");addLog(`二人の連携技「星結び」！ ${damage}ダメージ、二人のHPが回復。`);updateUI();if(state.enemyHp<=0){setTimeout(victory,700);return;}setTimeout(enemyTurn,700);
+        const damage=91+Math.floor(Math.random()*15),bonus=damageEnemy(damage);const healY=Math.min(18,heroes.yuno.maxHp-heroes.yuno.hp),healG=Math.min(18,heroes.gai.maxHp-heroes.gai.hp);heroes.yuno.hp+=healY;heroes.gai.hp+=healG;
+        setMessage("二人の星が重なる。星結びを放った！");addLog(`二人の連携技「星結び」！ ${damage+bonus}ダメージ${bonus?`（傷口に追加${bonus}）`:""}、二人のHPが回復。`);updateUI();if(state.enemyHp<=0){setTimeout(victory,700);return;}setTimeout(enemyTurn,700);
       }
       function showDialog(kicker,title,text,button,callback){$("dialogKicker").textContent=kicker;$("dialogTitle").textContent=title;$("dialogText").innerHTML=text;$("dialogButton").textContent=button;$("dialogOverlay").classList.remove("hidden");$("dialogButton").onclick=()=>{$("dialogOverlay").classList.add("hidden");callback();};$("dialogButton").focus();}
       function victory(){
         state.busy=true;updateUI();if(state.battle===battles.length-1){state.ended=true;setMessage("二人の旅に、星の光が満ちた。");showDialog("JOURNEY COMPLETE","星はふたたび輝く","ユノとガイは、失われた星灯りを取り戻した。<br>二人で重ねた一手が、夜明けを連れてきた。","もう一度旅をする",restart);return;}
-        const defeated=currentBattle().enemy;state.battle++;state.enemyHp=currentBattle().hp;state.bond=clamp(state.bond+24,0,100);state.potions=2;
+        const defeated=currentBattle().enemy;state.battle++;state.enemyHp=currentBattle().hp;state.woundTurns=0;state.bond=clamp(state.bond+24,0,100);state.potions=2;
         for(const key of keys){heroes[key].hp=Math.min(heroes[key].maxHp,heroes[key].hp+27);heroes[key].mp=Math.min(heroes[key].maxMp,heroes[key].mp+9);heroes[key].alive=true;heroes[key].defend=false;}
         state.pending={};state.busy=false;state.turn=1;state.nextHero="yuno";addLog(`${defeated}を退けた。少し休み、次の場所へ進む。`);updateUI();setMessage(`${currentBattle().place}にたどり着いた。`);
         showDialog("JOURNEY CONTINUES",`${defeated}を退けた`,`${currentBattle().place}へ進む。<br>休息でHP・MPが回復し、薬草も補充された。`,`次の戦いへ`,()=>{setMessage(`${currentBattle().enemy}が立ちはだかる。二人で行動を選ぼう。`);updateUI();});
       }
       function defeat(){state.ended=true;state.busy=true;setMessage("二人は力尽きてしまった。");updateUI();showDialog("JOURNEY PAUSED","星はまだ消えていない","二人の旅はここで足止めされた。<br>絆を深め、もう一度立ち向かおう。","最初からやり直す",restart);}
-      function restart(){for(const key of keys){const hero=heroes[key];hero.hp=hero.maxHp;hero.mp=hero.maxMp;hero.alive=true;hero.defend=false;}state.battle=0;state.enemyHp=battles[0].hp;state.turn=1;state.bond=0;state.pending={};state.nextHero="yuno";state.busy=false;state.potions=2;state.ended=false;$("logList").innerHTML="<li>風が魔物の唸りを運んでくる。</li>";setMessage("二人の行動を選んでください。");updateUI();}
-      document.querySelectorAll(".action-btn").forEach(button=>button.addEventListener("click",()=>planAction(button.dataset.actor,button.dataset.action)));
+      function restart(){for(const key of keys){const hero=heroes[key];hero.hp=hero.maxHp;hero.mp=hero.maxMp;hero.alive=true;hero.defend=false;}state.battle=0;state.enemyHp=battles[0].hp;state.woundTurns=0;state.turn=1;state.bond=0;state.pending={};state.nextHero="yuno";state.busy=false;state.potions=2;state.ended=false;$("logList").innerHTML="<li>風が魔物の唸りを運んでくる。</li>";setMessage("二人の行動を選んでください。");updateUI();}
+      document.querySelectorAll(".action-btn").forEach(button=>button.addEventListener("click",()=>button.dataset.action==="skill"?openSkillMenu(button.dataset.actor):planAction(button.dataset.actor,button.dataset.action)));
+      $("skillCancel").addEventListener("click",()=>{$("skillOverlay").classList.add("hidden");});
       $("linkButton").addEventListener("click",useLink);
-      document.addEventListener("keydown",event=>{if(!$("dialogOverlay").classList.contains("hidden")||event.altKey||event.ctrlKey||event.metaKey)return;const map={"1":"attack","2":"skill","3":"guard","4":"potion"};if(map[event.key]&&!state.busy&&!state.ended){event.preventDefault();planAction(state.nextHero,map[event.key]);}});
+      document.addEventListener("keydown",event=>{if(!$ ("dialogOverlay").classList.contains("hidden")||event.altKey||event.ctrlKey||event.metaKey)return;const map={"1":"attack","2":"skill","3":"guard","4":"potion"};if(map[event.key]&&!state.busy&&!state.ended){event.preventDefault();if(map[event.key]==="skill")openSkillMenu(state.nextHero);else planAction(state.nextHero,map[event.key]);}if(event.key==="Escape")$("skillOverlay").classList.add("hidden");});
       window.addEventListener("resize",fitCanvas);fitCanvas();requestAnimationFrame(drawScene);updateUI();
       $("dialogButton").onclick=()=>{$("dialogOverlay").classList.add("hidden");setMessage("二人の行動を選んでください。");};
     })();
