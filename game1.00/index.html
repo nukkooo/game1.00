@@ -1,1189 +1,277 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>星結びの旅路</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#142d2a">
+  <title>星結びの旅路 | 二人連携RPG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Zen+Old+Mincho:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #0d1d1c;
-      --bg2: #152f2b;
-      --panel: rgba(20, 39, 35, 0.9);
-      --panel2: rgba(14, 29, 27, 0.92);
-      --line: rgba(245, 227, 178, 0.22);
-      --gold: #efc978;
-      --gold2: #dcae52;
-      --mint: #84d7b1;
-      --danger: #f1907a;
-      --text: #f4f1e6;
-      --muted: #bcc9be;
-      --shadow: rgba(0, 0, 0, 0.32);
-    }
-
-    * { box-sizing: border-box; }
-
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      background: radial-gradient(circle at top, #22433f 0%, #102522 35%, #0a1717 100%);
-      color: var(--text);
-      font-family: "Noto Sans JP", "Segoe UI", sans-serif;
-    }
-
-    body {
-      display: grid;
-      place-items: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    .app {
-      width: min(1100px, 100%);
-      background: rgba(12, 25, 23, 0.88);
-      border: 1px solid var(--line);
-      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(2px);
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      padding: 18px 24px 16px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(18, 35, 31, 0.9);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-mark {
-      width: 34px;
-      height: 34px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      border: 1px solid var(--gold);
-      color: var(--gold);
-      font-weight: 700;
-    }
-
-    .brand-name {
-      font-size: 1.1rem;
-      letter-spacing: 0.08em;
-      font-weight: 700;
-    }
-
-    .brand-sub {
-      color: var(--muted);
-      font-size: 0.6rem;
-      letter-spacing: 0.26em;
-    }
-
-    .journey {
-      color: var(--muted);
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .journey .dot {
-      width: 6px;
-      height: 6px;
-      background: var(--gold);
-      border-radius: 50%;
-      display: inline-block;
-    }
-
-    .journey strong {
-      color: var(--gold);
-      font-weight: 700;
-    }
-
-    .content {
-      padding: 18px 24px 24px;
-    }
-
-    .heading {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 16px;
-      margin-bottom: 14px;
-    }
-
-    .eyebrow {
-      margin: 0 0 4px;
-      color: var(--gold);
-      font-size: 0.68rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(1.8rem, 2.6vw, 2.6rem);
-      letter-spacing: 0.08em;
-    }
-
-    .chapter-note {
-      color: var(--muted);
-      font-size: 0.76rem;
-      line-height: 1.7;
-      text-align: right;
-    }
-
-    .battlefield {
-      position: relative;
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, #233a39 0%, #1b2c2a 100%);
-      min-height: 290px;
-      overflow: hidden;
-      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.18);
-    }
-
-    .scene {
-      position: relative;
-      height: 290px;
-      overflow: hidden;
-      background: linear-gradient(180deg, #2a4959 0%, #203c38 58%, #1a2c2a 100%);
-    }
-
-    .scene::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 75% 20%, rgba(255, 214, 124, 0.45), transparent 25%);
-    }
-
-    .mountain, .mountain-2, .mountain-3 {
-      position: absolute;
-      bottom: 60px;
-      background: rgba(41, 68, 61, 0.8);
-      clip-path: polygon(0 100%, 25% 42%, 50% 100%, 75% 30%, 100% 100%);
-    }
-
-    .mountain { left: 0; width: 48%; height: 130px; }
-    .mountain-2 { left: 28%; width: 38%; height: 160px; background: rgba(52, 79, 71, 0.82); }
-    .mountain-3 { right: 0; width: 40%; height: 150px; }
-
-    .ground {
-      position: absolute;
-      inset: auto 0 0 0;
-      height: 90px;
-      background: linear-gradient(180deg, #3a5648 0%, #1f342d 100%);
-      box-shadow: inset 0 8px 16px rgba(0, 0, 0, 0.14);
-    }
-
-    .hero-sprite, .enemy-sprite {
-      position: absolute;
-      bottom: 90px;
-      width: 78px;
-      height: 118px;
-      transform: translateX(-50%);
-      filter: drop-shadow(0 10px 16px rgba(0,0,0,0.25));
-    }
-
-    .hero-sprite {
-      left: 25%;
-      background: linear-gradient(180deg, #ad7e66 0%, #d7b79c 30%, #b8694d 100%);
-      clip-path: polygon(36% 0%, 64% 0%, 68% 22%, 88% 33%, 88% 58%, 100% 100%, 0 100%, 12% 58%, 12% 34%, 32% 22%);
-    }
-
-    .hero-sprite.gai {
-      left: 34%;
-      background: linear-gradient(180deg, #7d9c7f 0%, #b9d2a8 30%, #4d7560 100%);
-    }
-
-    .hero-sprite::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(255,255,255,0.12), transparent 40%);
-    }
-
-    .enemy-sprite {
-      left: 76%;
-      width: 110px;
-      height: 126px;
-      bottom: 88px;
-      background: linear-gradient(180deg, #5f6b56 0%, #3d4d40 30%, #2d2f2d 100%);
-      clip-path: polygon(16% 0%, 85% 0%, 100% 38%, 87% 100%, 10% 100%, 0 40%);
-    }
-
-    .enemy-sprite::before {
-      content: "";
-      position: absolute;
-      inset: 12px 18px 18px 18px;
-      background: rgba(28, 38, 29, 0.45);
-      clip-path: polygon(18% 0%, 82% 0%, 100% 50%, 68% 100%, 32% 100%, 0 50%);
-    }
-
-    .enemy-tag {
-      position: absolute;
-      right: 28px;
-      top: 26px;
-      text-align: right;
-      z-index: 2;
-    }
-
-    .enemy-name {
-      font-size: 1.1rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-    }
-
-    .enemy-level {
-      color: #f7d78a;
-      font-size: 0.62rem;
-      letter-spacing: 0.22em;
-      margin-top: 4px;
-    }
-
-    .wound-status {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 4px 8px;
-      border: 1px solid rgba(243, 144, 122, 0.8);
-      background: rgba(81, 34, 28, 0.75);
-      color: #ffd1bb;
-      font-size: 0.62rem;
-      opacity: 0;
-      transform: translateY(-4px);
-      transition: all 0.2s ease;
-    }
-
-    .wound-status.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .health-bar {
-      width: 130px;
-      height: 6px;
-      background: rgba(8, 12, 11, 0.72);
-      margin-top: 10px;
-      margin-left: auto;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .health-bar > span {
-      position: absolute;
-      inset: 0 auto 0 0;
-      width: 100%;
-      background: linear-gradient(90deg, #db8c6b, #f3c39e);
-      transition: width 0.3s ease;
-    }
-
-    .turnbar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-height: 52px;
-      padding: 10px 18px;
-      color: #ebeddd;
-      background: rgba(12, 25, 23, 0.96);
-      border-top: 1px solid var(--line);
-    }
-
-    .turn-mark {
-      color: var(--gold);
-      letter-spacing: 0.18em;
-      font-size: 0.68rem;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .battle-message {
-      font-size: 0.82rem;
-      line-height: 1.6;
-      min-height: 1.6em;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 290px;
-      gap: 18px;
-      margin-top: 18px;
-    }
-
-    .party-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .hero-card {
-      position: relative;
-      padding: 14px 14px 12px;
-      border: 1px solid var(--line);
-      background: linear-gradient(135deg, rgba(52, 74, 66, 0.8), rgba(20, 30, 31, 0.9));
-      transition: border-color 0.2s ease, transform 0.2s ease;
-    }
-
-    .hero-card.active {
-      border-color: rgba(239, 201, 120, 0.8);
-      box-shadow: inset 0 0 0 1px rgba(239, 201, 120, 0.18);
-    }
-
-    .hero-card.pending {
-      border-color: rgba(132, 215, 177, 0.7);
-    }
-
-    .hero-head {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .avatar {
-      width: 38px;
-      height: 38px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      font-weight: 700;
-      background: linear-gradient(135deg, #d5b57d, #8a6b4d);
-      color: #fff4d8;
-      box-shadow: inset 0 0 12px rgba(255,255,255,0.15);
-    }
-
-    .avatar.gai {
-      background: linear-gradient(135deg, #8ba18a, #4d675f);
-    }
-
-    .hero-name {
-      font-size: 1rem;
-      font-weight: 700;
-    }
-
-    .hero-role {
-      color: var(--muted);
-      font-size: 0.62rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .order-state {
-      margin-left: auto;
-      font-size: 0.62rem;
-      color: var(--mint);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-
-    .stat {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 10px;
-      font-size: 0.68rem;
-      color: var(--muted);
-    }
-
-    .bar {
-      height: 6px;
-      overflow: hidden;
-      background: rgba(8, 12, 11, 0.75);
-      margin-top: 4px;
-    }
-
-    .bar-fill {
-      display: block;
-      height: 100%;
-      width: 100%;
-      transition: width 0.25s ease;
-    }
-
-    .bar-fill.hp { background: linear-gradient(90deg, #5dbb7a, #b6de90); }
-    .bar-fill.mp { background: linear-gradient(90deg, #6ca7b4, #a3d8d8); }
-
-    .actions {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 6px;
-      margin-top: 12px;
-    }
-
-    button {
-      font: inherit;
-      cursor: pointer;
-      border: 1px solid rgba(233, 231, 214, 0.18);
-      background: rgba(9, 20, 20, 0.4);
-      color: var(--text);
-      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-    }
-
-    button:hover:not(:disabled), button:focus-visible:not(:disabled) {
-      border-color: var(--gold);
-      background: rgba(154, 122, 69, 0.16);
-      outline: none;
-      transform: translateY(-1px);
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .action-btn {
-      min-height: 38px;
-      font-size: 0.72rem;
-      padding: 6px 4px;
-    }
-
-    .side {
-      display: grid;
-      gap: 12px;
-    }
-
-    .panel {
-      border: 1px solid var(--line);
-      background: rgba(20, 35, 31, 0.9);
-      padding: 12px 14px;
-    }
-
-    .panel-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #eaece3;
-      font-size: 0.68rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-
-    .panel-title strong {
-      color: var(--gold);
-      font-weight: 700;
-    }
-
-    .bond-track {
-      position: relative;
-      height: 10px;
-      margin-top: 12px;
-      border: 1px solid rgba(239, 201, 120, 0.14);
-      background: rgba(10, 15, 14, 0.7);
-      overflow: hidden;
-    }
-
-    .bond-fill {
-      position: absolute;
-      inset: 0 auto 0 0;
-      width: 0%;
-      background: linear-gradient(90deg, #7ac7a0, #f0d07d);
-      transition: width 0.3s ease;
-    }
-
-    .bond-copy {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 0.62rem;
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .link-btn {
-      width: 100%;
-      min-height: 42px;
-      margin-top: 12px;
-      border: 1px solid rgba(239, 201, 120, 0.7);
-      color: #201d14;
-      background: linear-gradient(90deg, #f3d37c, #9ac793);
-      font-weight: 700;
-      letter-spacing: 0.06em;
-    }
-
-    .link-btn.ready {
-      box-shadow: 0 0 18px rgba(239, 201, 120, 0.25);
-    }
-
-    .link-btn:disabled {
-      background: rgba(122, 114, 96, 0.34);
-      color: rgba(255,255,255,0.4);
-      border-color: rgba(255,255,255,0.18);
-    }
-
-    .log-title {
-      margin: 0 0 8px;
-      color: var(--gold);
-      font-size: 0.62rem;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-    }
-
-    .log-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: grid;
-      gap: 6px;
-      min-height: 74px;
-    }
-
-    .log-list li {
-      color: #d9e0d0;
-      font-size: 0.68rem;
-      line-height: 1.5;
-    }
-
-    .log-list li:first-child {
-      color: var(--text);
-    }
-
-    .footer {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 16px;
-      color: rgba(228, 232, 222, 0.62);
-      font-size: 0.66rem;
-    }
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 20;
-      display: grid;
-      place-items: center;
-      background: rgba(7, 13, 12, 0.72);
-      backdrop-filter: blur(3px);
-      padding: 22px;
-    }
-
-    .overlay.hidden {
-      display: none;
-    }
-
-    .dialog {
-      width: min(440px, 100%);
-      border: 1px solid rgba(239, 201, 120, 0.54);
-      background: linear-gradient(145deg, #1d3934, #122724);
-      box-shadow: 0 26px 70px rgba(0,0,0,0.45);
-      padding: 28px 26px 24px;
-      text-align: center;
-    }
-
-    .dialog-kicker {
-      color: var(--gold);
-      font-size: 0.62rem;
-      letter-spacing: 0.26em;
-      text-transform: uppercase;
-    }
-
-    .dialog h2 {
-      margin: 12px auto 10px;
-      font-size: clamp(1.5rem, 2vw, 2.2rem);
-      letter-spacing: 0.04em;
-    }
-
-    .dialog p {
-      margin: 0;
-      color: #d3d9d1;
-      line-height: 1.9;
-      font-size: 0.82rem;
-    }
-
-    .dialog button {
-      min-width: 170px;
-      min-height: 42px;
-      margin-top: 20px;
-      background: var(--gold);
-      color: #1d2c27;
-      border-color: var(--gold);
-      font-weight: 700;
-    }
-
-    @media (max-width: 780px) {
-      .layout { grid-template-columns: 1fr; }
-      .side { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .battlefield, .scene { min-height: 240px; }
-      .heading { display: block; }
-      .chapter-note { margin-top: 6px; text-align: left; }
-    }
-
-    @media (max-width: 560px) {
-      body { padding: 12px; }
-      .topbar, .content { padding-left: 14px; padding-right: 14px; }
-      .journey { font-size: 0.6rem; letter-spacing: 0.08em; }
-      .party-grid, .side { grid-template-columns: 1fr; }
-      .actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .footer { display: block; }
-      .footer span + span { display: block; margin-top: 4px; }
-    }
+    :root { color-scheme:dark; --ink:#f4f0de; --muted:#bac7b9; --panel:rgba(21,43,39,.92); --line:rgba(228,229,187,.2); --gold:#e8c77c; --mint:#83c5a0; --serif:"Zen Old Mincho","Yu Mincho",serif; --sans:"Noto Sans JP",sans-serif; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-width:320px; min-height:100vh; color:var(--ink); background:#142d2a; font-family:var(--sans); background-image:radial-gradient(ellipse at 78% 4%,rgba(220,161,91,.16),transparent 30%),radial-gradient(circle at 17% 14%,rgba(125,195,183,.1),transparent 16%),linear-gradient(180deg,#0d1d1d 0%,#142d2a 100%); }
+    button { font:inherit; }
+    .shell { width:min(1320px,100%); margin:0 auto; padding:22px 32px 30px; }
+    .topline { display:flex; align-items:center; justify-content:space-between; gap:18px; padding-bottom:17px; border-bottom:1px solid var(--line); }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .brand-mark { width:34px; height:34px; display:grid; place-items:center; border:1px solid var(--gold); border-radius:50%; color:var(--gold); font:20px var(--serif); }
+    .brand-name { font:600 17px var(--serif); letter-spacing:1px; }
+    .brand-sub { color:var(--muted); font-size:10px; letter-spacing:2px; margin-top:2px; }
+    .journey { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:12px; }
+    .journey strong { color:var(--gold); font-weight:600; }
+    .journey-dot { width:5px; height:5px; border-radius:50%; background:var(--gold); }
+    main { padding-top:23px; }
+    .heading-row { display:flex; justify-content:space-between; align-items:end; gap:18px; margin-bottom:14px; }
+    .eyebrow { margin:0 0 4px; color:var(--gold); font:500 11px Cinzel,serif; letter-spacing:2.5px; text-transform:uppercase; }
+    h1 { margin:0; font:600 32px var(--serif); letter-spacing:1px; }
+    .chapter-note { color:var(--muted); font-size:12px; text-align:right; line-height:1.8; }
+    .battlefield { position:relative; overflow:hidden; border:1px solid rgba(235,222,173,.28); background:#253b37; box-shadow:0 22px 65px rgba(0,0,0,.27); }
+    #scene { display:block; width:100%; height:clamp(220px,31vw,355px); }
+    .scene-vignette { pointer-events:none; position:absolute; inset:0; background:linear-gradient(90deg,rgba(11,26,26,.18),transparent 42%,rgba(11,25,24,.12)),linear-gradient(0deg,rgba(10,23,21,.3),transparent 58%,rgba(11,25,24,.2)); }
+    .scene-label { position:absolute; left:20px; top:17px; display:flex; align-items:center; gap:9px; color:#f2e8ca; text-shadow:0 2px 8px #10211f; font-size:12px; }
+    .scene-label::before { content:""; width:6px; height:6px; background:var(--gold); transform:rotate(45deg); }
+    .enemy-tag { position:absolute; right:8%; top:21%; text-align:center; text-shadow:0 2px 9px #19231e; }
+    .enemy-name { font:600 18px var(--serif); }
+    .enemy-level { margin-top:3px; color:#f3d59b; font:500 10px Cinzel,serif; letter-spacing:1.6px; }
+    .wound-status { display:inline-block; margin-top:6px; padding:3px 7px; border:1px solid rgba(234,140,115,.65); color:#ffd2b8; background:rgba(76,32,28,.72); font-size:10px; }
+    .enemy-health { width:124px; height:5px; margin:9px auto 0; background:rgba(12,21,19,.67); }
+    .enemy-health-fill { width:100%; height:100%; background:linear-gradient(90deg,#dd8b69,#f0c17c); transition:width .3s; }
+    .battle-ribbon { display:flex; align-items:center; gap:12px; min-height:47px; padding:10px 19px; background:rgba(13,32,29,.93); border-top:1px solid rgba(255,255,255,.08); }
+    .turn-mark { color:var(--gold); font:600 10px Cinzel,serif; letter-spacing:1.3px; white-space:nowrap; }
+    .battle-message { color:#e8ead9; font-size:12px; line-height:1.6; }
+    .battle-layout { display:grid; grid-template-columns:minmax(0,1fr) 290px; gap:18px; margin-top:18px; align-items:start; }
+    .party-area { min-width:0; }
+    .party-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 9px; color:var(--muted); font-size:10px; letter-spacing:1.6px; }
+    .party-heading strong { color:var(--gold); font-weight:500; }
+    .party-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .hero-card { position:relative; padding:14px 15px 13px; background:linear-gradient(135deg,rgba(40,67,58,.96),rgba(23,45,40,.97)); border:1px solid var(--line); transition:border-color .2s,background .2s,box-shadow .2s,opacity .2s; }
+    .hero-card.active { border-color:rgba(232,199,124,.82); box-shadow:inset 0 0 0 1px rgba(232,199,124,.12); }
+    .hero-card.done { border-color:rgba(131,197,160,.53); }
+    .hero-card.down { opacity:.55; }
+    .hero-head { display:flex; align-items:center; gap:10px; }
+    .portrait { flex:none; width:37px; height:37px; display:grid; place-items:center; overflow:hidden; border-radius:50%; color:#fff0cb; font:600 16px var(--serif); background:linear-gradient(145deg,#d0b179,#7a5b46); }
+    .portrait.guardian { background:linear-gradient(145deg,#87a58a,#435951); }
+    .hero-name { font:600 15px var(--serif); }
+    .hero-role { margin-top:2px; color:var(--muted); font-size:10px; }
+    .order-state { margin-left:auto; color:var(--mint); font-size:10px; }
+    .stat-line { display:flex; justify-content:space-between; margin:12px 0 5px; font-size:10px; color:#d7ddce; }
+    .stat-line span:last-child { color:#f1e9d3; font-variant-numeric:tabular-nums; }
+    .meter { height:5px; overflow:hidden; background:rgba(8,19,18,.6); }
+    .meter-fill { width:100%; height:100%; transition:width .35s; }
+    .hp-fill { background:linear-gradient(90deg,#63ad7f,#a8d49a); }
+    .mp-fill { background:linear-gradient(90deg,#6caeb1,#acd9c1); }
+    .action-row { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; margin-top:14px; }
+    .action-btn { min-height:36px; padding:5px 4px; border:1px solid rgba(230,231,204,.2); color:#e8e9dc; background:rgba(8,23,21,.28); font-size:10px; cursor:pointer; transition:background .16s,border-color .16s,color .16s; }
+    .action-btn:hover:not(:disabled),.action-btn:focus-visible { color:#fff3d1; border-color:var(--gold); background:rgba(182,148,81,.17); outline:none; }
+    .action-btn:disabled { cursor:not-allowed; color:#758179; opacity:.65; }
+    .command-detail { min-height:14px; margin-top:7px; color:var(--muted); font-size:9px; }
+    .side-column { display:grid; gap:11px; }
+    .bond-panel,.log-panel { border:1px solid var(--line); background:rgba(20,41,37,.76); }
+    .bond-panel { padding:13px 15px 14px; }
+    .panel-title { display:flex; align-items:center; justify-content:space-between; color:#dfe2d2; font-size:11px; }
+    .panel-title span:last-child { color:var(--gold); font:500 12px Cinzel,serif; }
+    .bond-track { position:relative; height:9px; margin-top:11px; background:rgba(7,18,17,.68); border:1px solid rgba(236,224,180,.17); }
+    .bond-fill { width:0%; height:100%; background:linear-gradient(90deg,#74b89a,#e6c777); transition:width .4s; }
+    .bond-copy { display:flex; justify-content:space-between; gap:8px; margin-top:8px; color:var(--muted); font-size:9px; }
+    .link-btn { width:100%; min-height:39px; margin-top:12px; border:1px solid rgba(232,199,124,.56); color:#f7e8bd; background:linear-gradient(90deg,rgba(144,112,59,.26),rgba(68,100,77,.28)); font:600 12px var(--serif); cursor:pointer; }
+    .link-btn.ready { color:#162a22; background:linear-gradient(100deg,#e8c77c,#a7d19c); box-shadow:0 0 22px rgba(218,193,119,.2); }
+    .link-btn:hover:not(:disabled),.link-btn:focus-visible { filter:brightness(1.12); outline:1px solid var(--gold); outline-offset:2px; }
+    .link-btn:disabled { cursor:not-allowed; opacity:.55; }
+    .log-panel { padding:12px 15px; }
+    .log-title { margin:0 0 7px; color:var(--gold); font:500 9px Cinzel,serif; letter-spacing:1.7px; }
+    .log-list { display:grid; gap:5px; min-height:56px; margin:0; padding:0; list-style:none; }
+    .log-list li { color:#c6d0c3; font-size:10px; line-height:1.5; }
+    .log-list li:first-child { color:#f2ead7; }
+    .footer { display:flex; justify-content:space-between; gap:12px; margin-top:14px; color:rgba(221,226,207,.55); font-size:9px; }
+    .overlay { position:fixed; z-index:5; inset:0; display:grid; place-items:center; padding:20px; background:rgba(7,17,16,.72); backdrop-filter:blur(5px); animation:fade-in .28s ease both; }
+    .dialog { width:min(430px,100%); padding:30px; text-align:center; border:1px solid rgba(232,199,124,.52); background:linear-gradient(145deg,#244239,#182d29); box-shadow:0 24px 90px #071110; }
+    .dialog-kicker { color:var(--gold); font:500 10px Cinzel,serif; letter-spacing:2px; }
+    .dialog h2 { margin:12px 0 9px; font:600 27px var(--serif); }
+    .dialog p { margin:0 auto; max-width:340px; color:#d0d8ca; font-size:12px; line-height:2; }
+    .dialog-button { min-width:178px; min-height:43px; margin-top:21px; padding:0 18px; border:1px solid var(--gold); color:#21332b; background:var(--gold); font:600 12px var(--serif); cursor:pointer; }
+    .dialog-button:hover,.dialog-button:focus-visible { background:#f4dfa9; outline:2px solid #f4dfa9; outline-offset:3px; }
+    .skill-dialog { width:min(500px,100%); padding:26px; text-align:left; border:1px solid rgba(232,199,124,.52); background:linear-gradient(145deg,#244239,#182d29); box-shadow:0 24px 90px #071110; }
+    .skill-dialog h2 { margin:8px 0 4px; font:600 25px var(--serif); }
+    .skill-subtitle { margin:0 0 18px; color:var(--muted); font-size:11px; }
+    .skill-list { display:grid; gap:8px; }
+    .skill-option { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; min-height:64px; padding:10px 13px; text-align:left; border:1px solid rgba(230,231,204,.2); color:#e8e9dc; background:rgba(8,23,21,.28); cursor:pointer; }
+    .skill-option:hover:not(:disabled),.skill-option:focus-visible { border-color:var(--gold); background:rgba(182,148,81,.15); outline:none; }
+    .skill-option:disabled { color:#869087; cursor:not-allowed; opacity:.7; }
+    .skill-name { display:block; font:600 14px var(--serif); }
+    .skill-description { display:block; margin-top:4px; color:var(--muted); font-size:10px; }
+    .skill-cost { flex:none; color:var(--gold); font-size:11px; }
+    .skill-option:disabled .skill-cost { color:#a78c7b; }
+    .skill-cancel { display:block; min-width:92px; min-height:37px; margin:16px 0 0 auto; border:1px solid var(--line); color:#d5ddcf; background:transparent; font-size:11px; cursor:pointer; }
+    .skill-cancel:hover,.skill-cancel:focus-visible { border-color:var(--gold); color:#fff3d1; outline:none; }
+    .hidden { display:none !important; }
+    @keyframes fade-in { from { opacity:0; } to { opacity:1; } }
+    @media(max-width:760px) {
+      .shell { padding:15px 16px 22px; }.journey { font-size:10px; }.heading-row { align-items:start; }.chapter-note { font-size:10px; }
+      .battle-layout { grid-template-columns:1fr; }.side-column { grid-template-columns:1fr 1fr; align-items:start; }
+      .battlefield #scene { height:clamp(205px,49vw,300px); }.enemy-tag { right:6%; top:17%; }.footer { font-size:8px; }
+    }
+    @media(max-width:480px) {
+      .shell { padding:12px 12px 19px; }.brand-name { font-size:14px; }.brand-sub { letter-spacing:1px; font-size:8px; }.brand-mark { width:30px; height:30px; } h1 { font-size:26px; }
+      .journey { gap:6px; }.heading-row { display:block; }.chapter-note { margin-top:5px; text-align:left; }
+      .party-grid,.side-column { grid-template-columns:1fr; }.hero-card { padding:12px; }.battle-ribbon { align-items:flex-start; }.turn-mark { padding-top:2px; }
+      .action-btn { min-height:39px; font-size:11px; }.scene-label { left:12px; top:12px; font-size:10px; }.enemy-tag { right:4%; top:19%; }.enemy-name { font-size:14px; }.enemy-health { width:94px; }
+    }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; animation-duration:.01ms !important; transition-duration:.01ms !important; } }
   </style>
 </head>
 <body>
-  <div class="app">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark">星</div>
-        <div>
-          <div class="brand-name">星結びの旅路</div>
-          <div class="brand-sub">A TALE OF TWO</div>
-        </div>
-      </div>
-      <div class="journey">
-        <span>旅路</span><span class="dot"></span>
-        <strong id="journeyLabel">第一章</strong>
-        <span id="journeyPlace">風渡りの丘</span>
-      </div>
+  <div class="shell">
+    <header class="topline">
+      <div class="brand"><div class="brand-mark" aria-hidden="true">星</div><div><div class="brand-name">星結びの旅路</div><div class="brand-sub">A TALE OF TWO</div></div></div>
+      <div class="journey"><span>旅路</span><span class="journey-dot"></span><strong id="journeyCount">第一章</strong><span id="journeyPlace">風渡りの丘</span></div>
     </header>
-
-    <main class="content">
-      <div class="heading">
-        <div>
-          <p class="eyebrow">A DUO ADVENTURE</p>
-          <h1 id="chapterTitle">風渡りの丘</h1>
-        </div>
-        <div class="chapter-note" id="chapterNote">星灯りの欠片を求めて、二人は峠を越える。</div>
-      </div>
-
-      <section class="battlefield" aria-label="戦闘画面">
-        <div class="scene" aria-label="戦闘の風景">
-          <div class="mountain"></div>
-          <div class="mountain-2"></div>
-          <div class="mountain-3"></div>
-          <div class="hero-sprite yuno" id="heroYuno"></div>
-          <div class="hero-sprite gai" id="heroGai"></div>
-          <div class="enemy-sprite" id="enemySprite"></div>
-          <div class="enemy-tag">
-            <div class="enemy-name" id="enemyName">風裂き狼</div>
-            <div class="enemy-level" id="enemyLevel">WILD · Lv. 03</div>
-            <div class="wound-status" id="woundStatus">傷口 · 残り1ターン</div>
-            <div class="health-bar"><span id="enemyHpBar"></span></div>
-          </div>
-        </div>
-        <div class="turnbar" aria-live="polite">
-          <span class="turn-mark" id="turnMark">TURN 01</span>
-          <span class="battle-message" id="battleMessage">二人の行動を選んでください。まだ1人の仲間が残っています。</span>
-        </div>
+    <main>
+      <div class="heading-row"><div><p class="eyebrow">A DUO ADVENTURE</p><h1 id="chapterTitle">風渡りの丘</h1></div><div class="chapter-note" id="chapterNote">星灯りの欠片を求めて、二人は峠を越える。</div></div>
+      <section class="battlefield" aria-label="戦闘風景">
+        <canvas id="scene" aria-label="二人の冒険者と魔物が対峙する風景"></canvas><div class="scene-vignette"></div>
+        <div class="scene-label" id="locationLabel">風渡りの丘 · 夕刻</div>
+        <div class="enemy-tag"><div class="enemy-name" id="enemyName">風裂き狼</div><div class="enemy-level" id="enemyLevel">WILD · Lv. 03</div><div class="wound-status hidden" id="woundStatus">傷口 · 残り1ターン</div><div class="enemy-health"><div class="enemy-health-fill" id="enemyHealthFill"></div></div></div>
       </section>
-
-      <div class="layout">
-        <section aria-label="仲間の行動">
+      <div class="battle-ribbon" aria-live="polite"><span class="turn-mark" id="turnMark">TURN 01</span><span class="battle-message" id="battleMessage">二人の行動を選んでください。もう一人の行動を決めてください。</span></div>
+      <div class="battle-layout">
+        <section class="party-area" aria-label="仲間の行動">
+          <div class="party-heading"><span>ふたりの旅人</span><strong id="planningLabel">ユノの行動を選択</strong></div>
           <div class="party-grid">
-            <article class="hero-card active" id="card-yuno">
-              <div class="hero-head">
-                <div class="avatar">結</div>
-                <div>
-                  <div class="hero-name">ユノ</div>
-                  <div class="hero-role">剣士</div>
-                </div>
-                <div class="order-state" id="state-yuno">行動中</div>
-              </div>
-
-              <div class="stat"><span>HP</span><span id="hp-yuno-text">120 / 120</span></div>
-              <div class="bar"><span class="bar-fill hp" id="hp-yuno"></span></div>
-              <div class="stat"><span>MP</span><span id="mp-yuno-text">32 / 32</span></div>
-              <div class="bar"><span class="bar-fill mp" id="mp-yuno"></span></div>
-
-              <div class="actions" id="actions-yuno">
-                <button type="button" class="action-btn" data-actor="yuno" data-action="attack">斬る</button>
-                <button type="button" class="action-btn" data-actor="yuno" data-action="skill">月閃</button>
-                <button type="button" class="action-btn" data-actor="yuno" data-action="guard">守る</button>
-                <button type="button" class="action-btn" data-actor="yuno" data-action="potion">薬草</button>
-              </div>
+            <article class="hero-card active" id="card-yuno"><div class="hero-head"><div class="portrait" aria-hidden="true">結</div><div><div class="hero-name">ユノ</div><div class="hero-role">剣士</div></div><div class="order-state" id="order-yuno">行動中</div></div>
+              <div class="stat-line"><span>HP</span><span id="hp-yuno-text">120 / 120</span></div><div class="meter"><div class="meter-fill hp-fill" id="hp-yuno"></div></div>
+              <div class="stat-line"><span>MP</span><span id="mp-yuno-text">32 / 32</span></div><div class="meter"><div class="meter-fill mp-fill" id="mp-yuno"></div></div>
+              <div class="action-row" id="actions-yuno"><button class="action-btn" data-actor="yuno" data-action="attack">斬る</button><button class="action-btn" data-actor="yuno" data-action="skill">月閃</button><button class="action-btn" data-actor="yuno" data-action="guard">守る</button><button class="action-btn" data-actor="yuno" data-action="potion">薬草</button></div>
             </article>
-
-            <article class="hero-card" id="card-gai">
-              <div class="hero-head">
-                <div class="avatar gai">盾</div>
-                <div>
-                  <div class="hero-name">ガイ</div>
-                  <div class="hero-role">守人</div>
-                </div>
-                <div class="order-state" id="state-gai">待機</div>
-              </div>
-
-              <div class="stat"><span>HP</span><span id="hp-gai-text">145 / 145</span></div>
-              <div class="bar"><span class="bar-fill hp" id="hp-gai"></span></div>
-              <div class="stat"><span>MP</span><span id="mp-gai-text">24 / 24</span></div>
-              <div class="bar"><span class="bar-fill mp" id="mp-gai"></span></div>
-
-              <div class="actions" id="actions-gai">
-                <button type="button" class="action-btn" data-actor="gai" data-action="attack">打つ</button>
-                <button type="button" class="action-btn" data-actor="gai" data-action="skill">大地</button>
-                <button type="button" class="action-btn" data-actor="gai" data-action="guard">守る</button>
-                <button type="button" class="action-btn" data-actor="gai" data-action="potion">薬草</button>
-              </div>
+            <article class="hero-card" id="card-gai"><div class="hero-head"><div class="portrait guardian" aria-hidden="true">盾</div><div><div class="hero-name">ガイ</div><div class="hero-role">守人</div></div><div class="order-state" id="order-gai">待機</div></div>
+              <div class="stat-line"><span>HP</span><span id="hp-gai-text">145 / 145</span></div><div class="meter"><div class="meter-fill hp-fill" id="hp-gai"></div></div>
+              <div class="stat-line"><span>MP</span><span id="mp-gai-text">24 / 24</span></div><div class="meter"><div class="meter-fill mp-fill" id="mp-gai"></div></div>
+              <div class="action-row" id="actions-gai"><button class="action-btn" data-actor="gai" data-action="attack">打つ</button><button class="action-btn" data-actor="gai" data-action="skill">大地</button><button class="action-btn" data-actor="gai" data-action="guard">守る</button><button class="action-btn" data-actor="gai" data-action="potion">薬草</button></div>
             </article>
           </div>
         </section>
-
-        <aside class="side" aria-label="戦況情報">
-          <section class="panel">
-            <div class="panel-title"><span>ふたりの絆</span><strong id="bondValue">00 / 100</strong></div>
-            <div class="bond-track" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-              <div class="bond-fill" id="bondFill"></div>
-            </div>
-            <div class="bond-copy">
-              <span id="bondHint">あと100</span>
-              <span id="bondStatus">連携待機</span>
-            </div>
-            <button type="button" class="link-btn" id="linkButton" disabled>星結び</button>
-          </section>
-
-          <section class="panel">
-            <h2 class="log-title">Battle Log</h2>
-            <ul class="log-list" id="logList">
-              <li>旅が始まった。二人の連携が鍵になる。</li>
-              <li>風渡りの丘に、獣の気配が漂っている。</li>
-              <li>ユノの剣が、ふたりの未来を切り開く。</li>
-            </ul>
-          </section>
+        <aside class="side-column">
+          <section class="bond-panel" aria-label="絆ゲージ"><div class="panel-title"><span>ふたりの絆</span><span id="bondValue">00 / 100</span></div><div class="bond-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bond-fill" id="bondFill"></div></div><div class="bond-copy"><span id="bondHint">あと100</span><span id="bondState">連携待機</span></div><button class="link-btn" id="linkButton" type="button" disabled>星結び</button></section>
+          <section class="log-panel" aria-label="戦闘記録"><h2 class="log-title">BATTLE LOG</h2><ul class="log-list" id="logList" aria-live="polite"><li>風が魔物の唸りを運んでくる。</li><li>旅路はまだ始まったばかりだ。</li><li>二人の連携が、世界を救う鍵になる。</li></ul></section>
         </aside>
       </div>
-
-      <div class="footer">
-        <span>行動を予約して、二人の一手を重ねよう。</span>
-        <span>キー操作: 1 斬る · 2 技 · 3 守る · 4 薬草</span>
-      </div>
+      <footer class="footer"><span>行動を予約して、二人の一手を重ねよう。</span><span>キー操作: 1 斬る · 2 技 · 3 守る · 4 薬草</span></footer>
     </main>
   </div>
-
-  <div class="overlay hidden" id="dialogOverlay" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
-    <div class="dialog">
-      <div class="dialog-kicker" id="dialogKicker">A TALE OF TWO</div>
-      <h2 id="dialogTitle">旅路の始まり</h2>
-      <p id="dialogText">二人の冒険者が、星の欠片を求めて歩き出す。</p>
-      <button type="button" id="dialogButton">始める</button>
-    </div>
-  </div>
-
+  <div class="overlay hidden" id="skillOverlay" role="dialog" aria-modal="true" aria-labelledby="skillTitle"><div class="skill-dialog"><div class="dialog-kicker">SKILL</div><h2 id="skillTitle">ユノの技</h2><p class="skill-subtitle" id="skillSubtitle">現在のMP: 32 / 32</p><div class="skill-list" id="skillList"></div><button class="skill-cancel" id="skillCancel" type="button">閉じる</button></div></div>
+  <div class="overlay hidden" id="dialogOverlay" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"><div class="dialog"><div class="dialog-kicker" id="dialogKicker">A TALE OF TWO</div><h2 id="dialogTitle">旅路の始まり</h2><p id="dialogText">二人の冒険者が、星の欠片を求めて歩き出す。</p><button class="dialog-button" id="dialogButton" type="button">開始</button></div></div>
   <script>
     (() => {
       const heroes = {
-        yuno: { name: 'ユノ', role: '剣士', hp: 120, maxHp: 120, mp: 32, maxMp: 32, attack: 20, alive: true, defend: false },
-        gai: { name: 'ガイ', role: '守人', hp: 145, maxHp: 145, mp: 24, maxMp: 24, attack: 16, alive: true, defend: false }
+        yuno: { name:"ユノ", hp:120, maxHp:120, mp:32, maxMp:32, attack:20, defend:false, alive:true },
+        gai: { name:"ガイ", hp:145, maxHp:145, mp:24, maxMp:24, attack:16, defend:false, alive:true }
       };
-
       const battles = [
-        { place: '風渡りの丘', scene: '夕刻', enemy: '風裂き狼', level: 'WILD · Lv. 03', hp: 96, attack: 13, note: '星灯りの欠片を求めて、風に吹かれる峠を越える。', sky: '夕暮れ' },
-        { place: '水鏡の遺跡', scene: '薄明', enemy: '水鏡の番人', level: 'GUARDIAN · Lv. 06', hp: 144, attack: 17, note: '水面に映る古い星図が、もう一つの欠片を呼んでいる。', sky: '水の光' },
-        { place: '星喰いの祭壇', scene: '夜', enemy: '宵闇の竜', level: 'ANCIENT · Lv. 09', hp: 210, attack: 20, note: '最後の欠片を呑む竜が、月の影の奥で眠りを覚ます。', sky: '夜の星' }
+        { place:"風渡りの丘", location:"風渡りの丘 · 夕刻", enemy:"風裂き狼", level:"WILD · Lv. 03", hp:96, attack:13, note:"星灯りの欠片を求めて、二人は峠を越える。", sky:["#f0d4b0","#7f8a82"] },
+        { place:"水鏡の遺跡", location:"水鏡の遺跡 · 薄明", enemy:"水鏡の番人", level:"GUARDIAN · Lv. 06", hp:142, attack:17, note:"遺跡の水面に、古い星図が浮かび上がる。", sky:["#8cb3c9","#334b5a"] },
+        { place:"星喰いの祭壇", location:"星喰いの祭壇 · 夜", enemy:"宵闇の竜", level:"ANCIENT · Lv. 09", hp:206, attack:21, note:"最後の欠片を呑み込む竜が、月の影の奥で目を覚ます。", sky:["#2a2343","#08121d"] }
       ];
-
-      const state = {
-        battleIndex: 0,
-        enemyHp: battles[0].hp,
-        turn: 1,
-        bond: 0,
-        potions: 2,
-        pending: {},
-        nextHero: 'yuno',
-        busy: false,
-        ended: false,
-        woundTurns: 0
-      };
-
-      const keys = ['yuno', 'gai'];
-      const $ = (id) => document.getElementById(id);
-
-      function clamp(value, min, max) {
-        return Math.min(Math.max(value, min), max);
+      const state={battle:0,enemyHp:battles[0].hp,woundTurns:0,turn:1,bond:0,pending:{},nextHero:"yuno",busy:false,potions:2,ended:false};
+      const $=id=>document.getElementById(id),canvas=$("scene"),ctx=canvas.getContext("2d"),keys=["yuno","gai"];
+      const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
+      const currentBattle=()=>battles[state.battle];
+      function fitCanvas(){const rect=canvas.getBoundingClientRect(),ratio=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(rect.width*ratio);canvas.height=Math.round(rect.height*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);}
+      function polygon(points,fill,stroke){ctx.beginPath();points.forEach(([x,y],index)=>index?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.stroke();}}
+      function drawHero(x,y,scale,isGai,time){
+        ctx.save();ctx.translate(x,y+Math.sin(time/700+x)*1.5);ctx.scale(scale,scale);const cloak=isGai?"#526f60":"#a35e55";
+        ctx.fillStyle="rgba(10,19,16,.3)";ctx.beginPath();ctx.ellipse(0,0,25,6,0,0,Math.PI*2);ctx.fill();
+        polygon([[-13,-33],[-20,-5],[-11,-2],[12,-4],[17,-32],[7,-39],[-7,-39]],cloak,"rgba(28,37,30,.5)");
+        ctx.fillStyle=isGai?"#d6b899":"#e4bd98";ctx.beginPath();ctx.ellipse(0,-46,9,11,0,0,Math.PI*2);ctx.fill();ctx.fillStyle=isGai?"#526c5e":"#bf8960";ctx.beginPath();ctx.arc(0,-50,10,Math.PI,0,true);ctx.fill();
+        ctx.fillStyle="#f1e8d0";ctx.fillRect(-4,-44,2,2);ctx.fillRect(3,-44,2,2);
+        if(isGai){ctx.fillStyle="#8c9b78";ctx.beginPath();ctx.ellipse(-17,-23,10,16,-.25,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#c6ae79";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(16,-38);ctx.lineTo(22,-63);ctx.stroke();ctx.strokeStyle="#d7c58e";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(9,-3);ctx.lineTo(7,-30);ctx.stroke();}
+        else{ctx.strokeStyle="#e7d7b1";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(15,-35);ctx.lineTo(25,-65);ctx.stroke();ctx.strokeStyle="#bf9b63";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(9,-3);ctx.lineTo(7,-30);ctx.stroke();}
+        ctx.restore();
       }
-
-      function actionLabel(actor, action) {
-        const map = {
-          attack: actor === 'yuno' ? '斬る' : '打つ',
-          skill: actor === 'yuno' ? '月閃' : '大地の構え',
-          guard: '守る',
-          potion: '薬草'
-        };
-        return map[action] || action;
+      function drawEnemy(x,y,scale,time){
+        const stage=state.battle;ctx.save();ctx.translate(x,y+Math.sin(time/520)*3);ctx.scale(scale,scale);ctx.fillStyle="rgba(9,15,14,.33)";ctx.beginPath();ctx.ellipse(0,0,59,12,0,0,Math.PI*2);ctx.fill();
+        if(stage===0){polygon([[-54,-29],[-43,-52],[-24,-41],[-10,-53],[18,-44],[41,-49],[57,-28],[44,-8],[21,-2],[-24,-5],[-47,-13]],"#5e6253","#343c34");polygon([[-38,-43],[-43,-64],[-25,-51]],"#7b7a63","#343c34");polygon([[10,-42],[6,-66],[28,-51]],"#6d7251","#343c34");ctx.fillStyle="#9a9c76";ctx.beginPath();ctx.moveTo(-18,-11);ctx.lineTo(-40,-44);ctx.lineTo(-15,-50);ctx.closePath();ctx.fill();ctx.fillStyle="#e4d7b9";ctx.fillRect(-6,-46,3,3);ctx.fillRect(5,-46,3,3);}
+        else if(stage===1){ctx.fillStyle="#678c83";ctx.beginPath();ctx.ellipse(0,-31,43,30,0,0,Math.PI*2);ctx.fill();ctx.fillStyle="#98b5a0";ctx.beginPath();ctx.ellipse(-8,-40,24,12,-.2,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#d4f0ea";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-18,-14);ctx.lineTo(-42,-26);ctx.lineTo(-32,-42);ctx.stroke();ctx.beginPath();ctx.moveTo(20,-14);ctx.lineTo(42,-26);ctx.lineTo(30,-42);ctx.stroke();ctx.fillStyle="#d8f4ee";ctx.fillRect(-7,-46,3,3);ctx.fillRect(7,-46,3,3);}
+        else{polygon([[-58,-23],[-54,-55],[-31,-65],[-16,-53],[5,-68],[32,-56],[55,-45],[49,-15],[26,-4],[-33,-6]],"#52616a","#303e48");polygon([[-29,-54],[-53,-84],[-47,-45]],"#79818a");polygon([[21,-52],[49,-84],[37,-42]],"#768190");ctx.fillStyle="#d7d6d9";ctx.fillRect(-8,-48,4,4);ctx.fillRect(9,-48,4,4);}
+        ctx.restore();
       }
-
-      function currentBattle() {
-        return battles[state.battleIndex];
+      function drawScene(time){
+        const width=canvas.clientWidth,height=canvas.clientHeight;if(!width||!height)return;
+        const sky=ctx.createLinearGradient(0,0,0,height);sky.addColorStop(0,currentBattle().sky[0]);sky.addColorStop(1,currentBattle().sky[1]);ctx.fillStyle=sky;ctx.fillRect(0,0,width,height);
+        const sunX=width*.72,sunY=height*.28,glow=ctx.createRadialGradient(sunX,sunY,2,sunX,sunY,height*.36);glow.addColorStop(0,"rgba(255,229,176,.62)");glow.addColorStop(1,"rgba(255,223,163,0)");ctx.fillStyle=glow;ctx.fillRect(0,0,width,height);
+        if(state.battle===2){for(let i=0;i<25;i++){const sx=(i*137+41)%width,sy=(i*71+19)%(height*.53);ctx.fillStyle=`rgba(255,239,193,${.3+.35*Math.sin(time/450+i)})`;ctx.fillRect(sx,sy,2,2);}}
+        polygon([[0,height*.56],[width*.13,height*.37],[width*.25,height*.54],[width*.41,height*.33],[width*.58,height*.55],[width*.77,height*.34],[width,height*.57],[width,height],[0,height]],"#435e59","rgba(255,255,255,.04)");
+        polygon([[0,height*.68],[width*.19,height*.48],[width*.36,height*.69],[width*.53,height*.46],[width*.72,height*.7],[width*.89,height*.5],[width,height*.66],[width,height],[0,height]],"#2d514b","rgba(255,255,255,.04)");
+        const ground=ctx.createLinearGradient(0,height*.62,0,height);ground.addColorStop(0,"#405842");ground.addColorStop(1,"#23382d");ctx.fillStyle=ground;ctx.fillRect(0,height*.64,width,height*.36);
+        for(let i=0;i<18;i++){const gx=(i*79+23)%width,gy=height*.68+(i*31)%(height*.29);ctx.strokeStyle=i%2?"rgba(175,184,124,.26)":"rgba(125,163,115,.3)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(gx,gy);ctx.lineTo(gx+35,gy+18);ctx.stroke();}
+        const base=height*.82;drawHero(width*.23,base,Math.min(1.05,height/330),false,time);drawHero(width*.33,base+3,Math.min(1.02,height/340),true,time);drawEnemy(width*.72,base+1,Math.min(1.05,height/340),time);
       }
-
-      function setMessage(message) {
-        $('battleMessage').textContent = message;
-      }
-
-      function addLog(text) {
-        const list = $('logList');
-        const item = document.createElement('li');
-        item.textContent = text;
-        list.prepend(item);
-        while (list.children.length > 4) list.lastElementChild.remove();
-      }
-
-      function showDialog(kicker, title, text, buttonText, onClose) {
-        $('dialogKicker').textContent = kicker;
-        $('dialogTitle').textContent = title;
-        $('dialogText').innerHTML = text;
-        $('dialogButton').textContent = buttonText;
-        $('dialogOverlay').classList.remove('hidden');
-        $('dialogButton').onclick = () => {
-          $('dialogOverlay').classList.add('hidden');
-          if (typeof onClose === 'function') onClose();
-        };
-      }
-
-      function updateEnemyStyle() {
-        const battle = currentBattle();
-        $('enemyName').textContent = battle.enemy;
-        $('enemyLevel').textContent = battle.level;
-        $('enemyHpBar').style.width = `${(state.enemyHp / battle.hp) * 100}%`;
-        $('enemyHpBar').style.background = state.enemyHp < battle.hp * 0.35 ? 'linear-gradient(90deg, #d96a5c, #f4c27f)' : 'linear-gradient(90deg, #db8c6b, #f3c39e)';
-        $('woundStatus').textContent = state.woundTurns > 0 ? `傷口 · 残り${state.woundTurns}ターン` : '';
-        $('woundStatus').classList.toggle('show', state.woundTurns > 0);
-      }
-
-      function updateHeroCards() {
-        for (const key of keys) {
-          const hero = heroes[key];
-          const card = $('card-' + key);
-          const hpPercent = (hero.hp / hero.maxHp) * 100;
-          const mpPercent = (hero.mp / hero.maxMp) * 100;
-          const isPending = !!state.pending[key];
-          const isActive = !state.busy && !state.ended && state.nextHero === key && hero.alive && !isPending;
-
-          $('hp-' + key).style.width = `${hpPercent}%`;
-          $('mp-' + key).style.width = `${mpPercent}%`;
-          $('hp-' + key + '-text').textContent = `${Math.ceil(hero.hp)} / ${hero.maxHp}`;
-          $('mp-' + key + '-text').textContent = `${Math.floor(hero.mp)} / ${hero.maxMp}`;
-
-          card.classList.toggle('active', isActive);
-          card.classList.toggle('pending', isPending);
-          $('state-' + key).textContent = hero.alive ? (isPending ? '予約' : state.nextHero === key && !state.busy && !state.ended ? '行動中' : '待機') : '倒れる';
-
-          const buttons = document.querySelectorAll(`#actions-${key} .action-btn`);
-          buttons.forEach((button) => {
-            const action = button.dataset.action;
-            const disabled = state.busy || state.ended || !hero.alive || !!state.pending[key] || (state.nextHero !== key && !state.pending[key]) || (action === 'skill' && hero.mp < (key === 'yuno' ? 14 : 8)) || (action === 'potion' && (state.potions <= 0 || hero.hp >= hero.maxHp));
-            button.disabled = disabled;
-          });
+      function setMessage(message){$("battleMessage").textContent=message;}
+      function addLog(message){const list=$("logList"),item=document.createElement("li");item.textContent=message;list.prepend(item);while(list.children.length>4)list.lastElementChild.remove();}
+      function updateUI(){
+        const battle=currentBattle();$("enemyName").textContent=battle.enemy;$("enemyLevel").textContent=battle.level;$("enemyHealthFill").style.width=`${Math.max(0,state.enemyHp)/battle.hp*100}%`;$("locationLabel").textContent=`${battle.location}`;$("journeyPlace").textContent=battle.place;$("journeyCount").textContent=["第一章","第二章","終章"][state.battle];$("chapterTitle").textContent=battle.place;$("chapterNote").textContent=battle.note;$("turnMark").textContent=`TURN ${String(state.turn).padStart(2,"0")}`;$("woundStatus").textContent=state.woundTurns?`傷口 · 残り${state.woundTurns}ターン`:"";$("woundStatus").classList.toggle("hidden",state.woundTurns===0);
+        for(const key of keys){const hero=heroes[key],card=$("card-"+key);$("hp-"+key).style.width=`${hero.hp/hero.maxHp*100}%`;$("mp-"+key).style.width=`${hero.mp/hero.maxMp*100}%`;$("hp-"+key+"-text").textContent=`${hero.hp} / ${hero.maxHp}`;$("mp-"+key+"-text").textContent=`${hero.mp} / ${hero.maxMp}`;card.classList.toggle("active",!state.busy&&!state.ended&&state.nextHero===key&&hero.alive&&!state.pending[key]);card.classList.toggle("done",Boolean(state.pending[key]));card.classList.toggle("down",!hero.alive);
+          $("order-"+key).textContent=hero.alive ? (state.pending[key] ? "予約" : (state.nextHero===key&&!state.busy&&!state.ended ? "行動中" : "待機")) : "倒れる";
+          $("actions-"+key).querySelectorAll("button").forEach(button=>{const action=button.dataset.action;button.disabled=state.busy||state.ended||!hero.alive||Boolean(state.pending[key])||state.nextHero!==key&&(state.pending.yuno||state.pending.gai)?true:(action==="skill"&&hero.mp<(key==="yuno"?14:8))||(action==="potion"&&(state.potions<=0||hero.hp===hero.maxHp));});
         }
+        $("planningLabel").textContent=state.ended?"旅はここで終わった":state.busy?"敵の行動中…":state.pending.yuno&&state.pending.gai?"行動を解決中…":`${heroes[state.nextHero].name}の行動を選択`;
+        $("bondFill").style.width=`${state.bond}%`;$("bondValue").textContent=`${String(state.bond).padStart(2,"0")} / 100`;$("bondHint").textContent=state.bond>=100?"絆が満ちた":"あと"+(100-state.bond);$("bondState").textContent=state.bond>=100?"連携可":"連携待機";document.querySelector(".bond-track").setAttribute("aria-valuenow",state.bond);$("linkButton").disabled=state.busy||state.ended||state.bond<100||!heroes.yuno.alive||!heroes.gai.alive;$("linkButton").classList.toggle("ready",state.bond>=100&&!state.busy&&!state.ended);
       }
-
-      function renderBattleHeader() {
-        const battle = currentBattle();
-        $('journeyLabel').textContent = ['第一章', '第二章', '終章'][state.battleIndex] || '終章';
-        $('journeyPlace').textContent = battle.place;
-        $('chapterTitle').textContent = battle.place;
-        $('chapterNote').textContent = battle.note;
-        $('turnMark').textContent = `TURN ${String(state.turn).padStart(2, '0')}`;
+      function gainBond(amount){state.bond=clamp(state.bond+amount,0,100);}
+      function damageEnemy(baseDamage){const bonus=state.woundTurns?Math.floor(baseDamage*.2):0;state.enemyHp-=baseDamage+bonus;return bonus;}
+      function actionLabel(action,actor){return({attack:actor==="yuno"?"斬る":"打つ",skill:actor==="yuno"?"月閃":"大地の構え",guard:"守る",potion:"薬草"})[action];}
+      function openSkillMenu(actor){
+        if(state.busy||state.ended||actor!==state.nextHero||!heroes[actor].alive||state.pending[actor])return;
+        const skill=actor==="yuno"?{name:"月閃",cost:14,description:"星刃で敵を貫く強力な一撃。"}:{name:"大地の構え",cost:8,description:"敵に攻撃しながら身を守る技。"};
+        $("skillTitle").textContent=`${heroes[actor].name}の技`;
+        $("skillSubtitle").textContent=`現在のMP: ${heroes[actor].mp} / ${heroes[actor].maxMp}`;
+        const option=document.createElement("button");option.type="button";option.className="skill-option";option.disabled=heroes[actor].mp<skill.cost;
+        option.innerHTML=`<span><span class="skill-name">${skill.name}</span><span class="skill-description">${skill.description}</span></span><span class="skill-cost">MP ${skill.cost}</span>`;
+        option.addEventListener("click",()=>{$("skillOverlay").classList.add("hidden");planAction(actor,"skill");});
+        $("skillList").replaceChildren(option);$("skillOverlay").classList.remove("hidden");
+        if(option.disabled){$("skillSubtitle").textContent="MPが足りません。";$("skillCancel").focus();}else option.focus();
       }
-
-      function renderBond() {
-        const bondValue = $('bondValue');
-        const bondFill = $('bondFill');
-        const bondHint = $('bondHint');
-        const bondStatus = $('bondStatus');
-        const percent = clamp(state.bond, 0, 100);
-        bondFill.style.width = `${percent}%`;
-        bondValue.textContent = `${String(percent).padStart(2, '0')} / 100`;
-        const remaining = 100 - percent;
-        bondHint.textContent = percent >= 100 ? '絆が満ちた' : `あと${remaining}`;
-        bondStatus.textContent = percent >= 100 ? '連携可' : '連携待機';
-        $('linkButton').disabled = state.busy || state.ended || percent < 100 || !heroes.yuno.alive || !heroes.gai.alive;
-        $('linkButton').classList.toggle('ready', percent >= 100 && !state.busy && !state.ended);
+      function planAction(actor,action){
+        if(state.busy||state.ended||actor!==state.nextHero||!heroes[actor].alive||state.pending[actor])return;const hero=heroes[actor];
+        if(action==="skill"){const cost=actor==="yuno"?14:8;if(hero.mp<cost)return;hero.mp-=cost;}
+        if(action==="potion"){if(state.potions<=0||hero.hp===hero.maxHp)return;state.potions--;}
+        state.pending[actor]={action};state.nextHero=actor==="yuno"?"gai":"yuno";if(!heroes[state.nextHero].alive)state.nextHero=actor;
+        setMessage(`${hero.name}の行動を予約した。${state.pending.yuno&&state.pending.gai?"":"もう一人の行動を選ぼう。"}`);addLog(`${hero.name}は「${actionLabel(action,actor)}」を選んだ。`);updateUI();if(keys.every(key=>state.pending[key]||!heroes[key].alive))resolveTurn();
       }
-
-      function renderAll() {
-        renderBattleHeader();
-        updateEnemyStyle();
-        updateHeroCards();
-        renderBond();
+      function resolveTurn(){
+        state.busy=true;updateUI();
+        for(const key of keys){if(state.enemyHp<=0||!heroes[key].alive)continue;const action=state.pending[key].action,hero=heroes[key];
+          if(action==="attack"){const damage=hero.attack+Math.floor(Math.random()*5),mpRecovered=Math.min(3,hero.maxMp-hero.mp),bonus=damageEnemy(damage);hero.mp+=mpRecovered;gainBond(16);addLog(`${hero.name}の${actionLabel(action,key)}！ ${damage+bonus}ダメージ${bonus?`（傷口分${bonus}）`:""}。`);}
+          else if(action==="skill"&&key==="yuno"){const damage=39+Math.floor(Math.random()*8),bonus=damageEnemy(damage);gainBond(21);addLog(`ユノの月閃！ ${damage+bonus}ダメージを与えた。`);}
+          else if(action==="skill"){const damage=12+Math.floor(Math.random()*5),bonus=damageEnemy(damage);hero.defend=true;gainBond(18);addLog(`ガイは大地の構えで${damage+bonus}ダメージを与えた。`);}
+          else if(action==="guard"){const mpRecovered=Math.min(5,hero.maxMp-hero.mp);hero.mp+=mpRecovered;hero.defend=true;gainBond(12);addLog(`${hero.name}は守りを固めた。MPが${mpRecovered}回復した。`);}
+          else if(action==="potion"){const heal=Math.min(48,hero.maxHp-hero.hp);hero.hp+=heal;gainBond(10);addLog(`${hero.name}は薬草を使って${heal}回復した。`);}
+        }
+        state.pending={};updateUI();if(state.enemyHp<=0){setTimeout(victory,650);return;}setMessage(`${currentBattle().enemy}が二人に襲いかかる。`);setTimeout(enemyTurn,650);
       }
-
-      function gainBond(amount) {
-        state.bond = clamp(state.bond + amount, 0, 100);
+      function enemyTurn(){
+        if(state.ended)return;const living=keys.filter(key=>heroes[key].alive);if(!living.length){defeat();return;}
+        const target=living[Math.floor(Math.random()*living.length)],hero=heroes[target];let damage=currentBattle().attack+Math.floor(Math.random()*6);if(hero.defend){damage=Math.max(3,Math.floor(damage*.4));hero.defend=false;}
+        hero.hp=Math.max(0,hero.hp-damage);if(hero.hp===0){hero.alive=false;addLog(`${currentBattle().enemy}の攻撃。${hero.name}は倒れた。`);}else addLog(`${currentBattle().enemy}の攻撃。${hero.name}は${damage}のダメージ。`);
+        if(state.woundTurns>0){state.woundTurns--;if(state.woundTurns===0)addLog(`${currentBattle().enemy}の傷口がふさがった。`);}
+        state.turn++;state.busy=false;state.pending={};state.nextHero=heroes.yuno.alive?"yuno":"gai";updateUI();if(!heroes.yuno.alive&&!heroes.gai.alive){defeat();return;}setMessage(`${heroes.yuno.alive?"ユノ":"ガイ"}の行動を選んでください。`);setTimeout(()=>{},0);
       }
-
-      function damageEnemy(amount) {
-        const battle = currentBattle();
-        const woundBonus = state.woundTurns > 0 ? Math.floor(amount * 0.2) : 0;
-        state.enemyHp -= amount + woundBonus;
-        return woundBonus;
+      function useLink(){
+        if(state.busy||state.ended||state.bond<100||!heroes.yuno.alive||!heroes.gai.alive)return;state.busy=true;state.bond=0;state.pending={};
+        const damage=91+Math.floor(Math.random()*15),bonus=damageEnemy(damage);const healY=Math.min(18,heroes.yuno.maxHp-heroes.yuno.hp),healG=Math.min(18,heroes.gai.maxHp-heroes.gai.hp);heroes.yuno.hp+=healY;heroes.gai.hp+=healG;setMessage("二人の星が重なる。星結びを放った！");addLog(`二人の連携技「星結び」！ ${damage+bonus}ダメージ${bonus?`（傷口分${bonus}）`:""}、二人とも${healY+healG}回復。`);updateUI();if(state.enemyHp<=0){setTimeout(victory,700);return;}setTimeout(enemyTurn,700);
       }
-
-      function planAction(actor, action) {
-        if (state.busy || state.ended || actor !== state.nextHero || !heroes[actor].alive || state.pending[actor]) return;
-        const hero = heroes[actor];
-
-        if (action === 'skill') {
-          const cost = actor === 'yuno' ? 14 : 8;
-          if (hero.mp < cost) return;
-          hero.mp -= cost;
-        }
-
-        if (action === 'potion') {
-          if (state.potions <= 0 || hero.hp >= hero.maxHp) return;
-          state.potions -= 1;
-        }
-
-        state.pending[actor] = { action };
-        const next = actor === 'yuno' ? 'gai' : 'yuno';
-        state.nextHero = next;
-        if (!heroes[next].alive) state.nextHero = actor;
-
-        setMessage(`${hero.name}の行動を予約した。${state.pending.yuno && state.pending.gai ? '両者の行動を解決する。' : 'もう一人の行動を選ぼう。'}`);
-        addLog(`${hero.name}は「${actionLabel(actor, action)}」を選んだ。`);
-
-        renderAll();
-
-        if (state.pending.yuno && state.pending.gai) {
-          resolveTurn();
-        }
+      function showDialog(kicker,title,text,button,callback){$("dialogKicker").textContent=kicker;$("dialogTitle").textContent=title;$("dialogText").innerHTML=text;$("dialogButton").textContent=button;$("dialogOverlay").classList.remove("hidden");$("dialogButton").onclick=()=>{$("dialogOverlay").classList.add("hidden");if(typeof callback==="function")callback();};}
+      function victory(){
+        state.busy=true;updateUI();if(state.battle===battles.length-1){state.ended=true;setMessage("二人の旅に、星の光が満ちた。");showDialog("JOURNEY COMPLETE","星はふたたび輝く","全ての敵を退け、最後の欠片が星へと戻った。<br>旅は終わりではなく、次の章へ続く。","再挑戦",()=>restart());return;}
+        const defeated=currentBattle().enemy;state.battle++;state.enemyHp=currentBattle().hp;state.woundTurns=0;state.bond=clamp(state.bond+24,0,100);state.potions=2;for(const key of keys){heroes[key].hp=Math.min(heroes[key].maxHp,heroes[key].hp+27);heroes[key].mp=Math.min(heroes[key].maxMp,heroes[key].mp+9);heroes[key].alive=true;heroes[key].defend=false;}state.pending={};state.busy=false;state.turn=1;state.nextHero="yuno";addLog(`${defeated}を退けた。少し休み、次の場所へ進む。`);updateUI();setMessage(`${currentBattle().place}へ進む。HP・MPが回復し、薬草も補充された。`);showDialog("JOURNEY CONTINUES",`${defeated}を退けた`,`${currentBattle().place}へ進む。<br>休息でHP・MPが回復し、薬草も補充された。`,`次の戦いへ`,()=>{setMessage("二人の行動を選んでください。");});
       }
-
-      function applyHeroAction(actor) {
-        const hero = heroes[actor];
-        const action = state.pending[actor].action;
-        const battle = currentBattle();
-
-        if (action === 'attack') {
-          const damage = hero.attack + Math.floor(Math.random() * 6);
-          const bonus = damageEnemy(damage);
-          hero.mp = Math.min(hero.maxMp, hero.mp + 3);
-          gainBond(16);
-          addLog(`${hero.name}の${actionLabel(actor, action)}！ ${damage + bonus}ダメージ${bonus ? `（傷口分${bonus}）` : ''}。`);
-        } else if (action === 'skill' && actor === 'yuno') {
-          const damage = 38 + Math.floor(Math.random() * 10);
-          const bonus = damageEnemy(damage);
-          gainBond(22);
-          addLog(`${hero.name}の月閃！ ${damage + bonus}ダメージを与えた。`);
-        } else if (action === 'skill' && actor === 'gai') {
-          const damage = 16 + Math.floor(Math.random() * 7);
-          const bonus = damageEnemy(damage);
-          hero.defend = true;
-          gainBond(18);
-          addLog(`${hero.name}は大地の構えで踏みしめた。 ${damage + bonus}ダメージを与え、守りを固めた。`);
-        } else if (action === 'guard') {
-          hero.defend = true;
-          hero.mp = Math.min(hero.maxMp, hero.mp + 5);
-          gainBond(12);
-          addLog(`${hero.name}は守りを固めた。MPが少し回復した。`);
-        } else if (action === 'potion') {
-          const heal = Math.min(38, hero.maxHp - hero.hp);
-          hero.hp += heal;
-          gainBond(8);
-          addLog(`${hero.name}は薬草を使って${heal}回復した。`);
-        }
-
-        if (state.enemyHp <= 0) {
-          setTimeout(victory, 500);
-          return true;
-        }
-
-        return false;
-      }
-
-      function enemyTurn() {
-        if (state.ended) return;
-        const living = keys.filter((key) => heroes[key].alive);
-        if (!living.length) {
-          defeat();
-          return;
-        }
-
-        const target = living[Math.floor(Math.random() * living.length)];
-        const hero = heroes[target];
-        let damage = currentBattle().attack + Math.floor(Math.random() * 8);
-
-        if (hero.defend) {
-          damage = Math.max(3, Math.floor(damage * 0.38));
-          hero.defend = false;
-        }
-
-        hero.hp = Math.max(0, hero.hp - damage);
-        if (hero.hp <= 0) {
-          hero.hp = 0;
-          hero.alive = false;
-          addLog(`${currentBattle().enemy}の攻撃。${hero.name}は倒れた。`);
-        } else {
-          addLog(`${currentBattle().enemy}の攻撃。${hero.name}は${damage}ダメージを受けた。`);
-        }
-
-        if (state.woundTurns > 0) {
-          state.woundTurns -= 1;
-          if (state.woundTurns === 0) addLog(`${currentBattle().enemy}の傷口がふさがった。`);
-        }
-
-        if (!heroes.yuno.alive && !heroes.gai.alive) {
-          defeat();
-          return;
-        }
-
-        state.turn += 1;
-        state.busy = false;
-        state.pending = {};
-        state.nextHero = heroes.yuno.alive ? 'yuno' : 'gai';
-        if (state.enemyHp <= 0) {
-          setTimeout(victory, 500);
-          return;
-        }
-        setMessage('次のターン。ふたりの行動を選んでください。');
-        renderAll();
-      }
-
-      function resolveTurn() {
-        state.busy = true;
-        renderAll();
-
-        const order = keys.slice();
-        for (const key of order) {
-          if (!heroes[key].alive || !state.pending[key]) continue;
-          if (applyHeroAction(key)) {
-            state.pending = {};
-            renderAll();
-            return;
-          }
-        }
-
-        state.pending = {};
-
-        if (state.enemyHp <= 0) {
-          setTimeout(victory, 480);
-          return;
-        }
-
-        state.woundTurns = Math.max(state.woundTurns, 0);
-        setMessage(`${currentBattle().enemy}が二人に襲いかかる。`);
-        setTimeout(enemyTurn, 560);
-        renderAll();
-      }
-
-      function victory() {
-        if (state.ended) return;
-
-        const battle = currentBattle();
-        const nextBattleIndex = state.battleIndex + 1;
-
-        if (nextBattleIndex >= battles.length) {
-          state.ended = true;
-          state.busy = true;
-          setMessage('二人の旅に、星の光が満ちた。');
-          addLog('全ての敵を退け、最後の欠片が星へと戻った。');
-          showDialog('JOURNEY COMPLETE', '星はまた輝く', 'ふたりの絆が、世界を救った。もう一度旅を始めるなら「再挑戦」を選んでください。', '再挑戦', () => restartGame());
-          renderAll();
-          return;
-        }
-
-        const defeated = battle.enemy;
-        state.battleIndex = nextBattleIndex;
-        const nextBattle = currentBattle();
-        state.enemyHp = nextBattle.hp;
-        state.woundTurns = 0;
-        state.pending = {};
-        state.nextHero = 'yuno';
-        state.busy = false;
-        state.turn = 1;
-        state.bond = clamp(state.bond + 20, 0, 100);
-        state.potions = 2;
-
-        for (const key of keys) {
-          const hero = heroes[key];
-          hero.hp = Math.min(hero.maxHp, hero.hp + 18);
-          hero.mp = Math.min(hero.maxMp, hero.mp + 7);
-          hero.alive = true;
-          hero.defend = false;
-        }
-
-        addLog(`${defeated}を退けた。次の場所へ進む。`);
-        setMessage(`${nextBattle.place}へ進む。休息でHP・MPが回復した。`);
-        renderAll();
-        showDialog('JOURNEY CONTINUES', `${defeated}を退けた`, `${nextBattle.place}へ進む。<br>休息でHP・MPが回復し、薬草も補充された。`, '次の戦いへ', () => {
-          setMessage('二人の行動を選んでください。');
-        });
-      }
-
-      function defeat() {
-        state.ended = true;
-        state.busy = true;
-        setMessage('二人は力尽きてしまった。');
-        addLog('旅の記憶はまだ続く。もう一度挑戦しよう。');
-        showDialog('JOURNEY PAUSED', '星はまだ消えていない', 'ふたりの旅はここで終わったわけではない。<br>再び挑もう。', '再挑戦', () => restartGame());
-        renderAll();
-      }
-
-      function restartGame() {
-        for (const key of keys) {
-          const hero = heroes[key];
-          hero.hp = hero.maxHp;
-          hero.mp = hero.maxMp;
-          hero.alive = true;
-          hero.defend = false;
-        }
-
-        state.battleIndex = 0;
-        state.enemyHp = battles[0].hp;
-        state.turn = 1;
-        state.bond = 0;
-        state.potions = 2;
-        state.pending = {};
-        state.nextHero = 'yuno';
-        state.busy = false;
-        state.ended = false;
-        state.woundTurns = 0;
-        setMessage('二人の行動を選んでください。まだ1人の仲間が残っています。');
-        addLog('新しい旅が始まった。');
-        renderAll();
-      }
-
-      function useLinkSkill() {
-        if (state.busy || state.ended || state.bond < 100 || !heroes.yuno.alive || !heroes.gai.alive) return;
-        state.busy = true;
-        state.pending = {};
-        const damage = 90 + Math.floor(Math.random() * 18);
-        const bonus = damageEnemy(damage);
-        const healY = Math.min(20, heroes.yuno.maxHp - heroes.yuno.hp);
-        const healG = Math.min(20, heroes.gai.maxHp - heroes.gai.hp);
-        heroes.yuno.hp += healY;
-        heroes.gai.hp += healG;
-        state.bond = 0;
-        setMessage('二人の星が重なる。星結びを放った！');
-        addLog(`星結び！ ${damage + bonus}ダメージ${bonus ? `（傷口分${bonus}）` : ''}、二人とも${healY + healG}回復。`);
-
-        if (state.enemyHp <= 0) {
-          setTimeout(victory, 700);
-        } else {
-          setTimeout(enemyTurn, 700);
-        }
-        renderAll();
-      }
-
-      function handleKeydown(event) {
-        if (!event.key || event.altKey || event.ctrlKey || event.metaKey) return;
-        if ($('dialogOverlay').classList.contains('hidden') === false) return;
-        const map = { '1': ['yuno', 'attack'], '2': ['yuno', 'skill'], '3': ['yuno', 'guard'], '4': ['yuno', 'potion'] };
-        const selection = map[event.key];
-        if (selection) {
-          const [actor, action] = selection;
-          planAction(actor, action);
-        }
-      }
-
-      document.querySelectorAll('.action-btn').forEach((button) => {
-        button.addEventListener('click', () => {
-          const { actor, action } = button.dataset;
-          planAction(actor, action);
-        });
-      });
-
-      $('linkButton').addEventListener('click', useLinkSkill);
-      $('dialogButton').addEventListener('click', () => {
-        $('dialogOverlay').classList.add('hidden');
-      });
-      document.addEventListener('keydown', handleKeydown);
-
-      renderAll();
-      showDialog('A TALE OF TWO', '星結びの旅路', 'ユノとガイが、星の欠片を求めて旅を始める。<br>二人で意思を合わせて、敵を倒そう。', '始める', () => {
-        setMessage('二人の行動を選んでください。');
-      });
+      function defeat(){state.ended=true;state.busy=true;setMessage("二人は力尽きてしまった。");updateUI();showDialog("JOURNEY PAUSED","星はまだ消えていない","二人の旅はここで終わったわけではない。<br>再び挑もう。","再挑戦",()=>restart());}
+      function restart(){for(const key of keys){const hero=heroes[key];hero.hp=hero.maxHp;hero.mp=hero.maxMp;hero.alive=true;hero.defend=false;}state.battle=0;state.enemyHp=battles[0].hp;state.woundTurns=0;state.turn=1;state.bond=0;state.pending={};state.nextHero="yuno";state.busy=false;state.ended=false;state.potions=2;setMessage("二人の行動を選んでください。もう一人の行動を決めてください。");addLog("新しい旅が始まった。" );updateUI();}
+      document.querySelectorAll(".action-btn").forEach(button=>button.addEventListener("click",()=>button.dataset.action==="skill"?openSkillMenu(button.dataset.actor):planAction(button.dataset.actor,button.dataset.action)));
+      $("skillCancel").addEventListener("click",()=>$("skillOverlay").classList.add("hidden"));
+      $("linkButton").addEventListener("click",useLink);
+      document.addEventListener("keydown",event=>{if($("dialogOverlay").classList.contains("hidden")===false||event.altKey||event.ctrlKey||event.metaKey)return;const map={"1":"attack","2":"skill","3":"guard","4":"potion"};const action=map[event.key];if(action&&heroes[state.nextHero]&&heroes[state.nextHero].alive){planAction(state.nextHero,action);}});
+      window.addEventListener("resize",fitCanvas);fitCanvas();requestAnimationFrame(function renderFrame(time){drawScene(time);requestAnimationFrame(renderFrame);});updateUI();showDialog("A TALE OF TWO","旅路の始まり","ユノとガイが、星の欠片を求めて歩き出す。<br>二人の絆を信じて、敵を倒そう。","開始",()=>setMessage("二人の行動を選んでください。もう一人の行動を決めてください."));
     })();
   </script>
 </body>
