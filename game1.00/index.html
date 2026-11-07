@@ -13,7 +13,7 @@
     * { box-sizing:border-box; }
     body { margin:0; min-width:320px; min-height:100vh; color:var(--ink); background:#142d2a; font-family:var(--sans); background-image:radial-gradient(ellipse at 78% 4%,rgba(220,161,91,.16),transparent 30%),radial-gradient(circle at 17% 14%,rgba(125,195,183,.1),transparent 16%),linear-gradient(180deg,#0d1d1d 0%,#142d2a 100%); }
     button { font:inherit; }
-    .shell { width:min(1320px,100%); margin:0 auto; padding:22px 32px 30px; }
+    .shell { width:min(1600px,100%); margin:0 auto; padding:22px 32px 30px; }
     .topline { display:flex; align-items:center; justify-content:space-between; gap:18px; padding-bottom:17px; border-bottom:1px solid var(--line); }
     .brand { display:flex; align-items:center; gap:12px; }
     .brand-mark { width:34px; height:34px; display:grid; place-items:center; border:1px solid var(--gold); border-radius:50%; color:var(--gold); font:20px var(--serif); }
@@ -68,7 +68,7 @@
     .action-btn:disabled { cursor:not-allowed; color:#758179; opacity:.65; }
     .command-detail { min-height:14px; margin-top:7px; color:var(--muted); font-size:9px; }
     .side-column { display:grid; gap:11px; }
-    .bond-panel,.log-panel { border:1px solid var(--line); background:rgba(20,41,37,.76); }
+    .bond-panel { border:1px solid var(--line); background:rgba(20,41,37,.76); }
     .bond-panel { padding:13px 15px 14px; }
     .panel-title { display:flex; align-items:center; justify-content:space-between; color:#dfe2d2; font-size:11px; }
     .panel-title span:last-child { color:var(--gold); font:500 12px Cinzel,serif; }
@@ -79,10 +79,10 @@
     .link-btn.ready { color:#162a22; background:linear-gradient(100deg,#e8c77c,#a7d19c); box-shadow:0 0 22px rgba(218,193,119,.2); }
     .link-btn:hover:not(:disabled),.link-btn:focus-visible { filter:brightness(1.12); outline:1px solid var(--gold); outline-offset:2px; }
     .link-btn:disabled { cursor:not-allowed; opacity:.55; }
-    .log-panel { padding:12px 15px; }
-    .log-title { margin:0 0 7px; color:var(--gold); font:500 9px Cinzel,serif; letter-spacing:1.7px; }
-    .log-list { display:grid; gap:5px; min-height:56px; margin:0; padding:0; list-style:none; }
-    .log-list li { color:#c6d0c3; font-size:10px; line-height:1.5; }
+    .log-panel { position:absolute; z-index:1; top:43px; left:14px; width:min(440px,calc(100% - 28px)); max-height:132px; overflow:auto; padding:8px 0; border:0; background:transparent; box-shadow:none; }
+    .log-title { margin:0 0 7px; color:var(--gold); font:500 9px Cinzel,serif; letter-spacing:1.7px; text-shadow:0 1px 5px rgba(0,0,0,.95); }
+    .log-list { display:grid; gap:5px; max-height:82px; overflow:auto; margin:0; padding:0; list-style:none; }
+    .log-list li { color:#c6d0c3; font-size:10px; line-height:1.5; text-shadow:0 1px 5px rgba(0,0,0,.95); }
     .log-list li:first-child { color:#f2ead7; }
     .footer { display:flex; justify-content:space-between; gap:12px; margin-top:14px; color:rgba(221,226,207,.55); font-size:9px; }
     .overlay { position:fixed; z-index:5; inset:0; display:grid; place-items:center; padding:20px; background:rgba(7,17,16,.72); backdrop-filter:blur(5px); animation:fade-in .28s ease both; }
@@ -115,8 +115,8 @@
     @media(max-width:480px) {
       .shell { padding:12px 12px 19px; }.brand-name { font-size:14px; }.brand-sub { letter-spacing:1px; font-size:8px; }.brand-mark { width:30px; height:30px; } h1 { font-size:26px; }
       .journey { gap:6px; }.heading-row { display:block; }.chapter-note { margin-top:5px; text-align:left; }
-      .party-grid,.side-column { grid-template-columns:1fr; }.hero-card { padding:12px; }.battle-ribbon { align-items:flex-start; }.turn-mark { padding-top:2px; }
-      .action-btn { min-height:39px; font-size:11px; }.scene-label { left:12px; top:12px; font-size:10px; }.enemy-tag { right:4%; top:19%; }.enemy-name { font-size:14px; }.enemy-health { width:94px; }
+      .side-column { grid-template-columns:1fr; }.hero-card { padding:12px; }.battle-ribbon { align-items:flex-start; }.turn-mark { padding-top:2px; }
+      .action-row { grid-template-columns:repeat(2,minmax(0,1fr)); }.action-btn { min-height:39px; font-size:11px; }.scene-label { left:12px; top:12px; font-size:10px; }.enemy-tag { right:4%; top:19%; }.enemy-name { font-size:14px; }.enemy-health { width:94px; }
     }
     @media(prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; animation-duration:.01ms !important; transition-duration:.01ms !important; } }
   </style>
@@ -133,11 +133,12 @@
         <canvas id="scene" aria-label="二人の冒険者と魔物が対峙する風景"></canvas><div class="scene-vignette"></div>
         <div class="scene-label" id="locationLabel">風渡りの丘 · 夕刻</div>
         <div class="enemy-tag"><div class="enemy-name" id="enemyName">風裂き狼</div><div class="enemy-level" id="enemyLevel">WILD · Lv. 03</div><div class="wound-status hidden" id="woundStatus">傷口 · 残り1ターン</div><div class="enemy-health"><div class="enemy-health-fill" id="enemyHealthFill"></div></div></div>
+        <section class="log-panel" aria-label="戦闘記録"><h2 class="log-title">BATTLE LOG</h2><ul class="log-list" id="logList" aria-live="polite"><li>風が魔物の唸りを運んでくる。</li><li>旅路はまだ始まったばかりだ。</li><li>二人の連携が、世界を救う鍵になる。</li></ul></section>
       </section>
       <div class="battle-ribbon" aria-live="polite"><span class="turn-mark" id="turnMark">TURN 01</span><span class="battle-message" id="battleMessage">二人の行動を選んでください。もう一人の行動を決めてください。</span></div>
       <div class="battle-layout">
         <section class="party-area" aria-label="仲間の行動">
-          <div class="party-heading"><span>ふたりの旅人</span><strong id="planningLabel">ユノの行動を選択</strong></div>
+          <div class="party-heading"><span>ふたりの旅人</span><strong id="planningLabel">どちらからでも行動を選択</strong></div>
           <div class="party-grid">
             <article class="hero-card active" id="card-yuno"><div class="hero-head"><div class="portrait" aria-hidden="true">結</div><div><div class="hero-name">ユノ</div><div class="hero-role">剣士</div></div><div class="order-state" id="order-yuno">行動中</div></div>
               <div class="stat-line"><span>HP</span><span id="hp-yuno-text">120 / 120</span></div><div class="meter"><div class="meter-fill hp-fill" id="hp-yuno"></div></div>
@@ -153,7 +154,6 @@
         </section>
         <aside class="side-column">
           <section class="bond-panel" aria-label="絆ゲージ"><div class="panel-title"><span>ふたりの絆</span><span id="bondValue">00 / 100</span></div><div class="bond-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bond-fill" id="bondFill"></div></div><div class="bond-copy"><span id="bondHint">あと100</span><span id="bondState">連携待機</span></div><button class="link-btn" id="linkButton" type="button" disabled>星結び</button></section>
-          <section class="log-panel" aria-label="戦闘記録"><h2 class="log-title">BATTLE LOG</h2><ul class="log-list" id="logList" aria-live="polite"><li>風が魔物の唸りを運んでくる。</li><li>旅路はまだ始まったばかりだ。</li><li>二人の連携が、世界を救う鍵になる。</li></ul></section>
         </aside>
       </div>
       <footer class="footer"><span>行動を予約して、二人の一手を重ねよう。</span><span>キー操作: 1 斬る · 2 技 · 3 守る · 4 薬草</span></footer>
@@ -210,18 +210,18 @@
       function addLog(message){const list=$("logList"),item=document.createElement("li");item.textContent=message;list.prepend(item);while(list.children.length>4)list.lastElementChild.remove();}
       function updateUI(){
         const battle=currentBattle();$("enemyName").textContent=battle.enemy;$("enemyLevel").textContent=battle.level;$("enemyHealthFill").style.width=`${Math.max(0,state.enemyHp)/battle.hp*100}%`;$("locationLabel").textContent=`${battle.location}`;$("journeyPlace").textContent=battle.place;$("journeyCount").textContent=["第一章","第二章","終章"][state.battle];$("chapterTitle").textContent=battle.place;$("chapterNote").textContent=battle.note;$("turnMark").textContent=`TURN ${String(state.turn).padStart(2,"0")}`;$("woundStatus").textContent=state.woundTurns?`傷口 · 残り${state.woundTurns}ターン`:"";$("woundStatus").classList.toggle("hidden",state.woundTurns===0);
-        for(const key of keys){const hero=heroes[key],card=$("card-"+key);$("hp-"+key).style.width=`${hero.hp/hero.maxHp*100}%`;$("mp-"+key).style.width=`${hero.mp/hero.maxMp*100}%`;$("hp-"+key+"-text").textContent=`${hero.hp} / ${hero.maxHp}`;$("mp-"+key+"-text").textContent=`${hero.mp} / ${hero.maxMp}`;card.classList.toggle("active",!state.busy&&!state.ended&&state.nextHero===key&&hero.alive&&!state.pending[key]);card.classList.toggle("done",Boolean(state.pending[key]));card.classList.toggle("down",!hero.alive);
-          $("order-"+key).textContent=hero.alive ? (state.pending[key] ? "予約" : (state.nextHero===key&&!state.busy&&!state.ended ? "行動中" : "待機")) : "倒れる";
-          $("actions-"+key).querySelectorAll("button").forEach(button=>{const action=button.dataset.action;button.disabled=state.busy||state.ended||!hero.alive||Boolean(state.pending[key])||state.nextHero!==key&&(state.pending.yuno||state.pending.gai)?true:(action==="skill"&&hero.mp<(key==="yuno"?14:8))||(action==="potion"&&(state.potions<=0||hero.hp===hero.maxHp));});
+        for(const key of keys){const hero=heroes[key],card=$("card-"+key);$("hp-"+key).style.width=`${hero.hp/hero.maxHp*100}%`;$("mp-"+key).style.width=`${hero.mp/hero.maxMp*100}%`;$("hp-"+key+"-text").textContent=`${hero.hp} / ${hero.maxHp}`;$("mp-"+key+"-text").textContent=`${hero.mp} / ${hero.maxMp}`;card.classList.toggle("active",!state.busy&&!state.ended&&hero.alive&&!state.pending[key]);card.classList.toggle("done",Boolean(state.pending[key]));card.classList.toggle("down",!hero.alive);
+          $("order-"+key).textContent=hero.alive ? (state.pending[key] ? "予約" : (state.busy||state.ended ? "待機" : "選択可")) : "倒れる";
+          $("actions-"+key).querySelectorAll("button").forEach(button=>{const action=button.dataset.action;button.disabled=state.busy||state.ended||!hero.alive||Boolean(state.pending[key])||(action==="skill"&&hero.mp<(key==="yuno"?14:8))||(action==="potion"&&(state.potions<=0||hero.hp===hero.maxHp));});
         }
-        $("planningLabel").textContent=state.ended?"旅はここで終わった":state.busy?"敵の行動中…":state.pending.yuno&&state.pending.gai?"行動を解決中…":`${heroes[state.nextHero].name}の行動を選択`;
+        const availableHeroes=keys.filter(key=>heroes[key].alive&&!state.pending[key]);$("planningLabel").textContent=state.ended?"旅はここで終わった":state.busy?"敵の行動中…":availableHeroes.length===2?"どちらからでも行動を選択":availableHeroes.length===1?`${heroes[availableHeroes[0]].name}の行動を選択`:"行動を解決中…";
         $("bondFill").style.width=`${state.bond}%`;$("bondValue").textContent=`${String(state.bond).padStart(2,"0")} / 100`;$("bondHint").textContent=state.bond>=100?"絆が満ちた":"あと"+(100-state.bond);$("bondState").textContent=state.bond>=100?"連携可":"連携待機";document.querySelector(".bond-track").setAttribute("aria-valuenow",state.bond);$("linkButton").disabled=state.busy||state.ended||state.bond<100||!heroes.yuno.alive||!heroes.gai.alive;$("linkButton").classList.toggle("ready",state.bond>=100&&!state.busy&&!state.ended);
       }
       function gainBond(amount){state.bond=clamp(state.bond+amount,0,100);}
       function damageEnemy(baseDamage){const bonus=state.woundTurns?Math.floor(baseDamage*.2):0;state.enemyHp-=baseDamage+bonus;return bonus;}
       function actionLabel(action,actor){return({attack:actor==="yuno"?"斬る":"打つ",skill:"スキル",guard:"守る",potion:"薬草"})[action];}
       function openSkillMenu(actor){
-        if(state.busy||state.ended||actor!==state.nextHero||!heroes[actor].alive||state.pending[actor])return;
+        if(state.busy||state.ended||!heroes[actor].alive||state.pending[actor])return;
         const skill=actor==="yuno"?{name:"月閃",cost:14,description:"星刃で敵を貫く強力な一撃。"}:{name:"大地",cost:8,description:"敵に攻撃しながら身を守る技。"};
         $("skillTitle").textContent=`${heroes[actor].name}のスキル`;
         $("skillSubtitle").textContent=`現在のMP: ${heroes[actor].mp} / ${heroes[actor].maxMp}`;
@@ -232,7 +232,7 @@
         if(option.disabled){$("skillSubtitle").textContent="MPが足りません。";$("skillCancel").focus();}else option.focus();
       }
       function planAction(actor,action){
-        if(state.busy||state.ended||actor!==state.nextHero||!heroes[actor].alive||state.pending[actor])return;const hero=heroes[actor];
+        if(state.busy||state.ended||!heroes[actor].alive||state.pending[actor])return;const hero=heroes[actor];
         if(action==="skill"){const cost=actor==="yuno"?14:8;if(hero.mp<cost)return;hero.mp-=cost;}
         if(action==="potion"){if(state.potions<=0||hero.hp===hero.maxHp)return;state.potions--;}
         state.pending[actor]={action};state.nextHero=actor==="yuno"?"gai":"yuno";if(!heroes[state.nextHero].alive)state.nextHero=actor;
