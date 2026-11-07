@@ -142,12 +142,12 @@
             <article class="hero-card active" id="card-yuno"><div class="hero-head"><div class="portrait" aria-hidden="true">結</div><div><div class="hero-name">ユノ</div><div class="hero-role">剣士</div></div><div class="order-state" id="order-yuno">行動中</div></div>
               <div class="stat-line"><span>HP</span><span id="hp-yuno-text">120 / 120</span></div><div class="meter"><div class="meter-fill hp-fill" id="hp-yuno"></div></div>
               <div class="stat-line"><span>MP</span><span id="mp-yuno-text">32 / 32</span></div><div class="meter"><div class="meter-fill mp-fill" id="mp-yuno"></div></div>
-              <div class="action-row" id="actions-yuno"><button class="action-btn" data-actor="yuno" data-action="attack">斬る</button><button class="action-btn" data-actor="yuno" data-action="skill">月閃</button><button class="action-btn" data-actor="yuno" data-action="guard">守る</button><button class="action-btn" data-actor="yuno" data-action="potion">薬草</button></div>
+              <div class="action-row" id="actions-yuno"><button class="action-btn" data-actor="yuno" data-action="attack">斬る</button><button class="action-btn" data-actor="yuno" data-action="skill">スキル</button><button class="action-btn" data-actor="yuno" data-action="guard">守る</button><button class="action-btn" data-actor="yuno" data-action="potion">薬草</button></div>
             </article>
             <article class="hero-card" id="card-gai"><div class="hero-head"><div class="portrait guardian" aria-hidden="true">盾</div><div><div class="hero-name">ガイ</div><div class="hero-role">守人</div></div><div class="order-state" id="order-gai">待機</div></div>
               <div class="stat-line"><span>HP</span><span id="hp-gai-text">145 / 145</span></div><div class="meter"><div class="meter-fill hp-fill" id="hp-gai"></div></div>
               <div class="stat-line"><span>MP</span><span id="mp-gai-text">24 / 24</span></div><div class="meter"><div class="meter-fill mp-fill" id="mp-gai"></div></div>
-              <div class="action-row" id="actions-gai"><button class="action-btn" data-actor="gai" data-action="attack">打つ</button><button class="action-btn" data-actor="gai" data-action="skill">大地</button><button class="action-btn" data-actor="gai" data-action="guard">守る</button><button class="action-btn" data-actor="gai" data-action="potion">薬草</button></div>
+              <div class="action-row" id="actions-gai"><button class="action-btn" data-actor="gai" data-action="attack">打つ</button><button class="action-btn" data-actor="gai" data-action="skill">スキル</button><button class="action-btn" data-actor="gai" data-action="guard">守る</button><button class="action-btn" data-actor="gai" data-action="potion">薬草</button></div>
             </article>
           </div>
         </section>
@@ -159,7 +159,7 @@
       <footer class="footer"><span>行動を予約して、二人の一手を重ねよう。</span><span>キー操作: 1 斬る · 2 技 · 3 守る · 4 薬草</span></footer>
     </main>
   </div>
-  <div class="overlay hidden" id="skillOverlay" role="dialog" aria-modal="true" aria-labelledby="skillTitle"><div class="skill-dialog"><div class="dialog-kicker">SKILL</div><h2 id="skillTitle">ユノの技</h2><p class="skill-subtitle" id="skillSubtitle">現在のMP: 32 / 32</p><div class="skill-list" id="skillList"></div><button class="skill-cancel" id="skillCancel" type="button">閉じる</button></div></div>
+  <div class="overlay hidden" id="skillOverlay" role="dialog" aria-modal="true" aria-labelledby="skillTitle"><div class="skill-dialog"><div class="dialog-kicker">SKILL</div><h2 id="skillTitle">ユノのスキル</h2><p class="skill-subtitle" id="skillSubtitle">現在のMP: 32 / 32</p><div class="skill-list" id="skillList"></div><button class="skill-cancel" id="skillCancel" type="button">閉じる</button></div></div>
   <div class="overlay hidden" id="dialogOverlay" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"><div class="dialog"><div class="dialog-kicker" id="dialogKicker">A TALE OF TWO</div><h2 id="dialogTitle">旅路の始まり</h2><p id="dialogText">二人の冒険者が、星の欠片を求めて歩き出す。</p><button class="dialog-button" id="dialogButton" type="button">開始</button></div></div>
   <script>
     (() => {
@@ -219,11 +219,11 @@
       }
       function gainBond(amount){state.bond=clamp(state.bond+amount,0,100);}
       function damageEnemy(baseDamage){const bonus=state.woundTurns?Math.floor(baseDamage*.2):0;state.enemyHp-=baseDamage+bonus;return bonus;}
-      function actionLabel(action,actor){return({attack:actor==="yuno"?"斬る":"打つ",skill:actor==="yuno"?"月閃":"大地の構え",guard:"守る",potion:"薬草"})[action];}
+      function actionLabel(action,actor){return({attack:actor==="yuno"?"斬る":"打つ",skill:"スキル",guard:"守る",potion:"薬草"})[action];}
       function openSkillMenu(actor){
         if(state.busy||state.ended||actor!==state.nextHero||!heroes[actor].alive||state.pending[actor])return;
-        const skill=actor==="yuno"?{name:"月閃",cost:14,description:"星刃で敵を貫く強力な一撃。"}:{name:"大地の構え",cost:8,description:"敵に攻撃しながら身を守る技。"};
-        $("skillTitle").textContent=`${heroes[actor].name}の技`;
+        const skill=actor==="yuno"?{name:"月閃",cost:14,description:"星刃で敵を貫く強力な一撃。"}:{name:"大地",cost:8,description:"敵に攻撃しながら身を守る技。"};
+        $("skillTitle").textContent=`${heroes[actor].name}のスキル`;
         $("skillSubtitle").textContent=`現在のMP: ${heroes[actor].mp} / ${heroes[actor].maxMp}`;
         const option=document.createElement("button");option.type="button";option.className="skill-option";option.disabled=heroes[actor].mp<skill.cost;
         option.innerHTML=`<span><span class="skill-name">${skill.name}</span><span class="skill-description">${skill.description}</span></span><span class="skill-cost">MP ${skill.cost}</span>`;
@@ -243,7 +243,7 @@
         for(const key of keys){if(state.enemyHp<=0||!heroes[key].alive)continue;const action=state.pending[key].action,hero=heroes[key];
           if(action==="attack"){const damage=hero.attack+Math.floor(Math.random()*5),mpRecovered=Math.min(3,hero.maxMp-hero.mp),bonus=damageEnemy(damage);hero.mp+=mpRecovered;gainBond(16);addLog(`${hero.name}の${actionLabel(action,key)}！ ${damage+bonus}ダメージ${bonus?`（傷口分${bonus}）`:""}。`);}
           else if(action==="skill"&&key==="yuno"){const damage=39+Math.floor(Math.random()*8),bonus=damageEnemy(damage);gainBond(21);addLog(`ユノの月閃！ ${damage+bonus}ダメージを与えた。`);}
-          else if(action==="skill"){const damage=12+Math.floor(Math.random()*5),bonus=damageEnemy(damage);hero.defend=true;gainBond(18);addLog(`ガイは大地の構えで${damage+bonus}ダメージを与えた。`);}
+          else if(action==="skill"){const damage=12+Math.floor(Math.random()*5),bonus=damageEnemy(damage);hero.defend=true;gainBond(18);addLog(`ガイは大地で${damage+bonus}ダメージを与えた。`);}
           else if(action==="guard"){const mpRecovered=Math.min(5,hero.maxMp-hero.mp);hero.mp+=mpRecovered;hero.defend=true;gainBond(12);addLog(`${hero.name}は守りを固めた。MPが${mpRecovered}回復した。`);}
           else if(action==="potion"){const heal=Math.min(48,hero.maxHp-hero.hp);hero.hp+=heal;gainBond(10);addLog(`${hero.name}は薬草を使って${heal}回復した。`);}
         }
